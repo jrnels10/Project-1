@@ -31,3 +31,4 @@ require([
             position: "top-right"
         });
     });
+    console.log('hello')
