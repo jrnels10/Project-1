@@ -1,15 +1,15 @@
-//   // Initialize Firebase
-//   var config = {
-//     apiKey: "AIzaSyCHcwv7DP-PmycL-kcR7RVl4RrIWI6M358",
-//     authDomain: "photoaggregator-b3ee4.firebaseapp.com",
-//     databaseURL: "https://photoaggregator-b3ee4.firebaseio.com",
-//     projectId: "photoaggregator-b3ee4",
-//     storageBucket: "",
-//     messagingSenderId: "793722329004"
-//   };
-//   firebase.initializeApp(config);
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyCHcwv7DP-PmycL-kcR7RVl4RrIWI6M358",
+    authDomain: "photoaggregator-b3ee4.firebaseapp.com",
+    databaseURL: "https://photoaggregator-b3ee4.firebaseio.com",
+    projectId: "photoaggregator-b3ee4",
+    storageBucket: "",
+    messagingSenderId: "793722329004"
+  };
+  firebase.initializeApp(config);
 
-//   var database = firebase.database(); 
+  var database = firebase.database(); 
 
 // ==================================================================================================
 // ============================ Map API =============================================================
@@ -104,7 +104,7 @@ var emptyArray = [];
 var searchTerm = "arizona";
 var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + searchTerm + "&api_key=4yRpEILyq50dh9npI0IKoifeIPUZKgdT&limit=10";
 
-var createGif = function () {
+function createGif () {
 
     $("#gif-div").empty();
     //call on API to get info
@@ -118,7 +118,7 @@ var createGif = function () {
         for (i = 0; i < 10; i++) {
 
             var results = response.data;
-            var imgURL = results[i].images.downsized.url;
+            var imgURL = results[i].images.original_still.url;
             console.log(results);
             var picDiv = $('<div>').addClass("pic-div float");
             var image = $('<img>').attr('src', imgURL);
@@ -129,12 +129,14 @@ var createGif = function () {
 }
 createGif();
 
+
+
+
+/////////////////////////////////
 // function newSearch () {
 
 //     $('#gif-div').empty();
 
 // for (i = 0; i < emptyArray.length; i++) {
-    
-// }
 
-// ear// chWidget
+// }
