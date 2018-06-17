@@ -11,6 +11,7 @@ firebase.initializeApp(config);
 
 var database = firebase.database();
 
+
 // ==================================================================================================
 // ============================ Map API =============================================================
 // ==================================================================================================
@@ -58,13 +59,13 @@ require([
         searchWidget.on("search-complete", function (event) {
             console.log("Search started.");
             console.log("results", event)
-            searchTermVar = event.target.searchTerm
-            console.log("result", searchTermVar)
+            console.log("result", event.target.searchTerm)
+            searchTermGiphy = event.target.searchTerm
 
             database.ref().update({
-                searchTermVar: event.target.searchTerm
+                searchTermGiphy: event.target.searchTerm
             })
-            giphy()
+            createGif();
         });
 
 
@@ -101,18 +102,49 @@ console.log('hello')
 // ==================================================================================================
 // ============================ Giphy API =============================================================
 // ==================================================================================================
-database.ref().on('child_added', giphy);
+// var emptyArray = [];
+// var searchTermGiphy;
+// var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + searchTermGiphy + "&api_key=4yRpEILyq50dh9npI0IKoifeIPUZKgdT&limit=10";
 
-var emptyArray = [];
-function giphy(snapshot) {
-    var searchTermVar = snapshot.val();
-    console.log('search-term: ' + searchTermVar)
-    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + searchTermVar + "&api_key=4yRpEILyq50dh9npI0IKoifeIPUZKgdT&limit=10";
+// var createGif = function () {
 
-    // function createGif() {
+//     $("#gif-div").empty();
+//     //call on API to get info
+//     console.log("queryURL", queryURL)
+
+//     $.ajax({
+//         url: queryURL,
+//         method: 'GET'
+
+//     }).then(function (response) {
+
+//         for (i = 0; i < 10; i++) {
+
+//             var results = response.data;
+//             var imgURL = results[i].images.downsized.url;
+//             console.log(results);
+//             var picDiv = $('<div>').addClass("pic-div float");
+//             var image = $('<img>').attr('src', imgURL);
+//             picDiv.append(image);
+//             $("#gif-div").append(picDiv);
+//         }
+//     });
+// }
+// createGif();
+
+
+database.ref("/searchTermGiphy").on("value", function (snap) {
+    var searchTermGiphy = snap.val()
+    console.log("searchTermGiphy", searchTermGiphy);
+    var emptyArray = [];
+    var searchTermGiphy;
+    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + searchTermGiphy + "&api_key=4yRpEILyq50dh9npI0IKoifeIPUZKgdT&limit=10";
+
+    var createGif = function () {
 
         $("#gif-div").empty();
         //call on API to get info
+        console.log("queryURL", queryURL)
 
         $.ajax({
             url: queryURL,
@@ -123,7 +155,7 @@ function giphy(snapshot) {
             for (i = 0; i < 10; i++) {
 
                 var results = response.data;
-                var imgURL = results[i].images.original_still.url;
+                var imgURL = results[i].images.downsized.url;
                 console.log(results);
                 var picDiv = $('<div>').addClass("pic-div float");
                 var image = $('<img>').attr('src', imgURL);
@@ -131,10 +163,9 @@ function giphy(snapshot) {
                 $("#gif-div").append(picDiv);
             }
         });
-    // }
-    // createGif();
-}
-giphy()
+    }
+    createGif();
+})
 
 
 
