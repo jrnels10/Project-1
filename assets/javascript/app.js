@@ -1,15 +1,15 @@
-  // Initialize Firebase
-  var config = {
+// Initialize Firebase
+var config = {
     apiKey: "AIzaSyCHcwv7DP-PmycL-kcR7RVl4RrIWI6M358",
     authDomain: "photoaggregator-b3ee4.firebaseapp.com",
     databaseURL: "https://photoaggregator-b3ee4.firebaseio.com",
     projectId: "photoaggregator-b3ee4",
     storageBucket: "",
     messagingSenderId: "793722329004"
-  };
-  firebase.initializeApp(config);
+};
+firebase.initializeApp(config);
 
-  var database = firebase.database(); 
+var database = firebase.database();
 
 // ==================================================================================================
 // ============================ Map API =============================================================
@@ -58,12 +58,13 @@ require([
         searchWidget.on("search-complete", function (event) {
             console.log("Search started.");
             console.log("results", event)
-            console.log("result", event.target.searchTerm)
-            searchTerm = event.target.searchTerm
+            searchTermVar = event.target.searchTerm
+            console.log("result", searchTermVar)
 
             database.ref().update({
-                searchTerm: event.target.searchTerm
+                searchTermVar: event.target.searchTerm
             })
+            giphy()
         });
 
 
@@ -100,35 +101,40 @@ console.log('hello')
 // ==================================================================================================
 // ============================ Giphy API =============================================================
 // ==================================================================================================
+database.ref().on('child_added', giphy);
+
 var emptyArray = [];
-var searchTerm = "arizona";
-var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + searchTerm + "&api_key=4yRpEILyq50dh9npI0IKoifeIPUZKgdT&limit=10";
+function giphy(snapshot) {
+    var searchTermVar = snapshot.val();
+    console.log('search-term: ' + searchTermVar)
+    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + searchTermVar + "&api_key=4yRpEILyq50dh9npI0IKoifeIPUZKgdT&limit=10";
 
-function createGif () {
+    // function createGif() {
 
-    $("#gif-div").empty();
-    //call on API to get info
+        $("#gif-div").empty();
+        //call on API to get info
 
-    $.ajax({
-        url: queryURL,
-        method: 'GET'
+        $.ajax({
+            url: queryURL,
+            method: 'GET'
 
-    }).then(function (response) {
+        }).then(function (response) {
 
-        for (i = 0; i < 10; i++) {
+            for (i = 0; i < 10; i++) {
 
-            var results = response.data;
-            var imgURL = results[i].images.original_still.url;
-            console.log(results);
-            var picDiv = $('<div>').addClass("pic-div float");
-            var image = $('<img>').attr('src', imgURL);
-            picDiv.append(image);
-            $("#gif-div").append(picDiv);
-        }
-    });
+                var results = response.data;
+                var imgURL = results[i].images.original_still.url;
+                console.log(results);
+                var picDiv = $('<div>').addClass("pic-div float");
+                var image = $('<img>').attr('src', imgURL);
+                picDiv.append(image);
+                $("#gif-div").append(picDiv);
+            }
+        });
+    // }
+    // createGif();
 }
-createGif();
-
+giphy()
 
 
 
