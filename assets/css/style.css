@@ -3,8 +3,11 @@ body,
 #viewDiv {
     padding: 0;
     margin: 0;
-    height: 100%;
+    height: 85%;
     width: 100%;
+}
+#gifDiv {
+    height: 25%;
 }
 
 /* #container {

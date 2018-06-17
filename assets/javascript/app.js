@@ -21,15 +21,17 @@ require([
             url: "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer"
         })
 
-        var map = new Map({
+        var maplocation = new Map({
             basemap: "streets",
             ground: "world-elevation"
+
         });
 
         var view = new MapView({
-            scale: 40000000,
+            scale: 20000000,
+            center:[-99.53613281247335, 36.77409249463308],
             container: "viewDiv",
-            map: map
+            map: maplocation
         });
         // to search by name on map
         var searchWidget = new Search({
@@ -84,22 +86,29 @@ console.log('hello')
 var emptyArray = [];
 var searchTerm = "arizona";
 var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + searchTerm + "&api_key=4yRpEILyq50dh9npI0IKoifeIPUZKgdT&limit=10";
+
 var createGif = function () {
+
     $("#gif-div").empty();
     //call on API to get info
+
     $.ajax({
         url: queryURL,
         method: 'GET'
 
     }).then(function (response) {
+
         for (i = 0; i < 10; i++) {
+
             var results = response.data;
             var imgURL = results[i].images.downsized.url;
             console.log(results);
             var picDiv = $('<div>').addClass("pic-div float");
             var image = $('<img>').attr('src', imgURL);
-            imgURL.append(picDiv);
+            picDiv.append(image);
             $("#gif-div").append(picDiv);
         }
-    })
-};
+    });
+}
+createGif();  
+
