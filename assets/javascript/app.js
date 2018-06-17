@@ -40,10 +40,11 @@ require([
         view.ui.add(searchWidget, {
             position: "top-right"
         });
-        searchWidget.on("search-start", function (event) {
+        searchWidget.on("search-complete", function (event) {
             console.log("Search started.");
             console.log("results", event)
-            console.log("result", event.target.results["0"].results["0"].name)
+            console.log("result", event.target.searchTerm)
+            searchTerm = event.target.searchTerm
         });
 
 
