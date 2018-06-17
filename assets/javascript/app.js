@@ -1,3 +1,6 @@
+
+
+
 // ==================================================================================================
 // ============================ Map API =============================================================
 // ==================================================================================================
@@ -21,15 +24,17 @@ require([
             url: "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer"
         })
 
-        var map = new Map({
+        var maplocation = new Map({
             basemap: "streets",
             ground: "world-elevation"
+
         });
 
         var view = new MapView({
-            scale: 40000000,
+            scale: 20000000,
+            center: [-99.53613281247335, 36.77409249463308],
             container: "viewDiv",
-            map: map
+            map: maplocation
         });
         // to search by name on map
         var searchWidget = new Search({
@@ -40,10 +45,16 @@ require([
         view.ui.add(searchWidget, {
             position: "top-right"
         });
-        searchWidget.on("search-start", function (event) {
+        searchWidget.on("search-complete", function (event) {
             console.log("Search started.");
             console.log("results", event)
-            console.log("result", event.target.results["0"].results["0"].name)
+            console.log("result", event.target.searchTerm)
+            searchTermGiphy = event.target.searchTerm
+
+            database.ref().update({
+                searchTermGiphy: event.target.searchTerm
+            })
+            createGif();
         });
 
 
@@ -75,11 +86,91 @@ require([
         });
     });
 console.log('hello')
+// Initialize Firebase
+var config = {
+    apiKey: "AIzaSyCHcwv7DP-PmycL-kcR7RVl4RrIWI6M358",
+    authDomain: "photoaggregator-b3ee4.firebaseapp.com",
+    databaseURL: "https://photoaggregator-b3ee4.firebaseio.com",
+    projectId: "photoaggregator-b3ee4",
+    storageBucket: "photoaggregator-b3ee4.appspot.com",
+    messagingSenderId: "793722329004"
+};
+firebase.initializeApp(config);
+
+var database = firebase.database();
+
+database.ref().update({
+    something: "something"
+})
 // .target.results["0"].results["0"].name
 
 // ==================================================================================================
 // ============================ Giphy API =============================================================
 // ==================================================================================================
+// var emptyArray = [];
+// var searchTermGiphy;
+// var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + searchTermGiphy + "&api_key=4yRpEILyq50dh9npI0IKoifeIPUZKgdT&limit=10";
+
+// var createGif = function () {
+
+//     $("#gif-div").empty();
+//     //call on API to get info
+//     console.log("queryURL", queryURL)
+
+//     $.ajax({
+//         url: queryURL,
+//         method: 'GET'
+
+//     }).then(function (response) {
+
+//         for (i = 0; i < 10; i++) {
+
+//             var results = response.data;
+//             var imgURL = results[i].images.downsized.url;
+//             console.log(results);
+//             var picDiv = $('<div>').addClass("pic-div float");
+//             var image = $('<img>').attr('src', imgURL);
+//             picDiv.append(image);
+//             $("#gif-div").append(picDiv);
+//         }
+//     });
+// }
+// createGif();
+
+
+database.ref("/searchTermGiphy").on("value", function (snap) {
+    var searchTermGiphy = snap.val()
+    console.log("searchTermGiphy", searchTermGiphy);
+    var emptyArray = [];
+    var searchTermGiphy;
+    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + searchTermGiphy + "&api_key=4yRpEILyq50dh9npI0IKoifeIPUZKgdT&limit=10";
+
+    var createGif = function () {
+
+        $("#gif-div").empty();
+        //call on API to get info
+        console.log("queryURL", queryURL)
+
+        $.ajax({
+            url: queryURL,
+            method: 'GET'
+
+        }).then(function (response) {
+
+            for (i = 0; i < 10; i++) {
+
+                var results = response.data;
+                var imgURL = results[i].images.downsized.url;
+                console.log(results);
+                var picDiv = $('<div>').addClass("pic-div float");
+                var image = $('<img>').attr('src', imgURL);
+                picDiv.append(image);
+                $("#gif-div").append(picDiv);
+            }
+        });
+    }
+    createGif();
+})
 
 var emptyArray = [];
 var searchTerm = "arizona";
@@ -102,4 +193,13 @@ $.ajax ({
     $("#viewDiv").append(picDiv);
     }
 }
-});
+)};
+// function newSearch () {
+
+//     $('#gif-div').empty();
+
+// for (i = 0; i < emptyArray.length; i++) {
+
+// }
+
+
