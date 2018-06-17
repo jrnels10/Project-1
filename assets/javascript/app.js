@@ -1,3 +1,16 @@
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyCHcwv7DP-PmycL-kcR7RVl4RrIWI6M358",
+    authDomain: "photoaggregator-b3ee4.firebaseapp.com",
+    databaseURL: "https://photoaggregator-b3ee4.firebaseio.com",
+    projectId: "photoaggregator-b3ee4",
+    storageBucket: "",
+    messagingSenderId: "793722329004"
+  };
+  firebase.initializeApp(config);
+
+  var databse = firebase.database(); 
+
 // ==================================================================================================
 // ============================ Map API =============================================================
 // ==================================================================================================
@@ -45,6 +58,10 @@ require([
             console.log("results", event)
             console.log("result", event.target.searchTerm)
             searchTerm = event.target.searchTerm
+
+            database.ref().update({
+                searchTerm: event.target.searchTerm
+            })
         });
 
 
