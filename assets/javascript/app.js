@@ -1,15 +1,4 @@
-//   // Initialize Firebase
-//   var config = {
-//     apiKey: "AIzaSyCHcwv7DP-PmycL-kcR7RVl4RrIWI6M358",
-//     authDomain: "photoaggregator-b3ee4.firebaseapp.com",
-//     databaseURL: "https://photoaggregator-b3ee4.firebaseio.com",
-//     projectId: "photoaggregator-b3ee4",
-//     storageBucket: "",
-//     messagingSenderId: "793722329004"
-//   };
-//   firebase.initializeApp(config);
 
-//   var database = firebase.database(); 
 
 // ==================================================================================================
 // ============================ Map API =============================================================
@@ -95,6 +84,22 @@ require([
         });
     });
 console.log('hello')
+// Initialize Firebase
+var config = {
+    apiKey: "AIzaSyCHcwv7DP-PmycL-kcR7RVl4RrIWI6M358",
+    authDomain: "photoaggregator-b3ee4.firebaseapp.com",
+    databaseURL: "https://photoaggregator-b3ee4.firebaseio.com",
+    projectId: "photoaggregator-b3ee4",
+    storageBucket: "photoaggregator-b3ee4.appspot.com",
+    messagingSenderId: "793722329004"
+};
+firebase.initializeApp(config);
+
+var database = firebase.database();
+
+database.ref().update({
+    something: "something"
+})
 // .target.results["0"].results["0"].name
 
 // ==================================================================================================
@@ -134,7 +139,7 @@ createGif();
 //     $('#gif-div').empty();
 
 // for (i = 0; i < emptyArray.length; i++) {
-    
+
 // }
 
 // ear// chWidget
