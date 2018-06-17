@@ -80,24 +80,25 @@ console.log('hello')
 // ==================================================================================================
 // ============================ Giphy API =============================================================
 // ==================================================================================================
-
+var emptyArray = [];
 var searchTerm = "arizona";
 var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + searchTerm + "&api_key=4yRpEILyq50dh9npI0IKoifeIPUZKgdT&limit=10";
+var createGif = function () {
+    $("#gif-div").empty();
+    //call on API to get info
+    $.ajax({
+        url: queryURL,
+        method: 'GET'
 
-//call on API to get info
-$.ajax({
-    url: queryURL,
-    method: 'GET'
-
-}).then(function (response) {
-    for (i = 0; i < 10; i++) {
-        var results = response.data;
-        var imgURL = results[i].images.downsized.url;
-        console.log(results);
-        var picDiv = $('<div>').addClass("pic-div float");
-
-    }
-
-
-
-})
+    }).then(function (response) {
+        for (i = 0; i < 10; i++) {
+            var results = response.data;
+            var imgURL = results[i].images.downsized.url;
+            console.log(results);
+            var picDiv = $('<div>').addClass("pic-div float");
+            var image = $('<img>').attr('src', imgURL);
+            imgURL.append(picDiv);
+            $("#gif-div").append(picDiv);
+        }
+    })
+};
