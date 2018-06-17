@@ -1,0 +1,21 @@
+html,
+body,
+#viewDiv {
+    padding: 0;
+    margin: 0;
+    height: 85%;
+    width: 100%;
+}
+#gifDiv {
+    height: 25%;
+}
+
+.esri-search__container {
+    height: 40px;
+    background-color: aqua;
+}
+
+/* #container {
+    width:50%;
+    height: 50%;
+} */
