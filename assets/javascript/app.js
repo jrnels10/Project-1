@@ -4,12 +4,16 @@
     authDomain: "photoaggregator-b3ee4.firebaseapp.com",
     databaseURL: "https://photoaggregator-b3ee4.firebaseio.com",
     projectId: "photoaggregator-b3ee4",
-    storageBucket: "",
+    storageBucket: "photoaggregator-b3ee4.appspot.com",
     messagingSenderId: "793722329004"
   };
   firebase.initializeApp(config);
 
-  var databse = firebase.database(); 
+  var database = firebase.database();
+
+  database.ref().update({
+      something: "something"
+  })
 
 // ==================================================================================================
 // ============================ Map API =============================================================
