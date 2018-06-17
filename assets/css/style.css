@@ -10,6 +10,11 @@ body,
     height: 25%;
 }
 
+.esri-search__container {
+    height: 40px;
+    background-color: aqua;
+}
+
 /* #container {
     width:50%;
     height: 50%;

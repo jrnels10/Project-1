@@ -1,15 +1,15 @@
-  // Initialize Firebase
-  var config = {
-    apiKey: "AIzaSyCHcwv7DP-PmycL-kcR7RVl4RrIWI6M358",
-    authDomain: "photoaggregator-b3ee4.firebaseapp.com",
-    databaseURL: "https://photoaggregator-b3ee4.firebaseio.com",
-    projectId: "photoaggregator-b3ee4",
-    storageBucket: "",
-    messagingSenderId: "793722329004"
-  };
-  firebase.initializeApp(config);
+//   // Initialize Firebase
+//   var config = {
+//     apiKey: "AIzaSyCHcwv7DP-PmycL-kcR7RVl4RrIWI6M358",
+//     authDomain: "photoaggregator-b3ee4.firebaseapp.com",
+//     databaseURL: "https://photoaggregator-b3ee4.firebaseio.com",
+//     projectId: "photoaggregator-b3ee4",
+//     storageBucket: "",
+//     messagingSenderId: "793722329004"
+//   };
+//   firebase.initializeApp(config);
 
-  var databse = firebase.database(); 
+//   var database = firebase.database(); 
 
 // ==================================================================================================
 // ============================ Map API =============================================================
@@ -42,7 +42,7 @@ require([
 
         var view = new MapView({
             scale: 20000000,
-            center:[-99.53613281247335, 36.77409249463308],
+            center: [-99.53613281247335, 36.77409249463308],
             container: "viewDiv",
             map: maplocation
         });
@@ -127,5 +127,14 @@ var createGif = function () {
         }
     });
 }
-createGif();  
+createGif();
 
+// function newSearch () {
+
+//     $('#gif-div').empty();
+
+// for (i = 0; i < emptyArray.length; i++) {
+    
+// }
+
+// ear// chWidget
