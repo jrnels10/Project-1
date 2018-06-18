@@ -76,6 +76,10 @@ require([
                 console.log("response", response)
                 console.log("City", response.attributes.City)
                 console.log("PLace Name", response.attributes.PlaceName)
+                database.ref().update({
+                    searchTermGiphy: response.attributes.City
+                })
+                createGif();
                 // If an address is successfully found, show it in the popup's content
                 view.popup.content = response.address;
                 console.log(view.popup.content)
