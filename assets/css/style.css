@@ -3,7 +3,7 @@ body,
 #viewDiv {
     padding: 0;
     margin: 0;
-    height: 85%;
+    height: 80vh;
     width: 100%;
 }
 #gifDiv {
@@ -12,10 +12,9 @@ body,
 
 .esri-search__container {
     height: 40px;
-    background-color: aqua;
+    background-color: rgb(0, 162, 255);
 }
 
-/* #container {
-    width:50%;
-    height: 50%;
-} */
+#container {
+    margin-top: 50px;
+}

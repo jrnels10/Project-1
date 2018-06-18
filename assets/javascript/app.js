@@ -132,10 +132,47 @@ database.ref("/searchTermGiphy").on("value", function (snap) {
                 var results = response.data;
                 var imgURL = results[i].images.downsized.url;
                 console.log(results);
-                var picDiv = $('<div>').addClass("pic-div float");
-                var image = $('<img>').attr('src', imgURL);
-                picDiv.append(image);
-                $("#gif-div").append(picDiv);
+                // var picDiv = $('<div>').addClass("pic-div float");
+                // var image = $('<img>').attr('src', imgURL);
+                // picDiv.append(image);
+                // $("#gif-div").append(picDiv);
+
+                var cardCol = $("<div>").addClass("col s12 m4");
+                $("#gif-div").append(cardCol);
+
+                var card = $("<div>").addClass("card small");
+                $(cardCol).append(card);
+
+                cardImage = $("<div>");
+                $(cardImage).addClass("card-image");
+                $(card).append(cardImage);
+
+                var img = $("<img>").attr("src", imgURL);
+                $(cardImage).append(img);
+
+                var cardContent = $("<div>");
+                $(cardContent).addClass("card-content");
+                $(card).append(cardContent);
+
+                var cardTitle = $("<span>");
+                $(cardTitle).addClass("card-title");
+                $(cardTitle).text("Placeholder");
+                $(cardContent).append(cardTitle);
+
+                // var cardp = $("<p>");
+                // $(cardp).text("Rating: " + gifRating);
+                // $(cardContent).append(cardTitle);
+
+                var cardAction = $("<div>");
+                $(cardAction).addClass("card-action");
+                $(card).append(cardAction);
+
+                var a = $("<a>");
+                $(a).attr("href", "#");
+                $(a).text("Download");
+                $(cardAction).append(a);
+                console.log("ran")
+
             }
         });
     }
