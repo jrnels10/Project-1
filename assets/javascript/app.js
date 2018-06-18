@@ -65,6 +65,7 @@ require([
             // around the decimals to 3 decimals
             var lat = Math.round(event.mapPoint.latitude * 1000) / 1000;
             var lon = Math.round(event.mapPoint.longitude * 1000) / 1000;
+            console.log("This is the Jacob Branch");
 
             view.popup.open({
                 // Set the popup's title to the coordinates of the clicked location
