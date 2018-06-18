@@ -48,6 +48,12 @@ require([
             position: "top-right"
         });
         searchWidget.on("search-complete", function (event) {
+	    //Center map to closest location
+            var lat = event.results[0].results[0].extent.center.latitude; //get lat from 1st address result
+	    var long = event.results[0].results[0].extent.center.longitude; //get long from 1st address result
+
+	    centerMap(view, Point, lat, long); //center map
+		
             console.log("Search started.");
             console.log("results", event)
             console.log("result", event.target.searchTerm)
