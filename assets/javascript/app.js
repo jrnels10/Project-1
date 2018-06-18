@@ -1,15 +1,4 @@
-// Initialize Firebase
-var config = {
-    apiKey: "AIzaSyCHcwv7DP-PmycL-kcR7RVl4RrIWI6M358",
-    authDomain: "photoaggregator-b3ee4.firebaseapp.com",
-    databaseURL: "https://photoaggregator-b3ee4.firebaseio.com",
-    projectId: "photoaggregator-b3ee4",
-    storageBucket: "",
-    messagingSenderId: "793722329004"
-};
-firebase.initializeApp(config);
 
-var database = firebase.database();
 
 
 // ==================================================================================================
@@ -101,40 +90,22 @@ require([
         });
     });
 console.log('hello')
-// .target.results["0"].results["0"].name
+// Initialize Firebase
+var config = {
+    apiKey: "AIzaSyCHcwv7DP-PmycL-kcR7RVl4RrIWI6M358",
+    authDomain: "photoaggregator-b3ee4.firebaseapp.com",
+    databaseURL: "https://photoaggregator-b3ee4.firebaseio.com",
+    projectId: "photoaggregator-b3ee4",
+    storageBucket: "photoaggregator-b3ee4.appspot.com",
+    messagingSenderId: "793722329004"
+};
+firebase.initializeApp(config);
 
-// ==================================================================================================
-// ============================ Giphy API =============================================================
-// ==================================================================================================
-// var emptyArray = [];
-// var searchTermGiphy;
-// var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + searchTermGiphy + "&api_key=4yRpEILyq50dh9npI0IKoifeIPUZKgdT&limit=10";
+var database = firebase.database();
 
-// var createGif = function () {
-
-//     $("#gif-div").empty();
-//     //call on API to get info
-//     console.log("queryURL", queryURL)
-
-//     $.ajax({
-//         url: queryURL,
-//         method: 'GET'
-
-//     }).then(function (response) {
-
-//         for (i = 0; i < 10; i++) {
-
-//             var results = response.data;
-//             var imgURL = results[i].images.downsized.url;
-//             console.log(results);
-//             var picDiv = $('<div>').addClass("pic-div float");
-//             var image = $('<img>').attr('src', imgURL);
-//             picDiv.append(image);
-//             $("#gif-div").append(picDiv);
-//         }
-//     });
-// }
-// createGif();
+database.ref().update({
+    something: "something"
+})
 
 
 database.ref("/searchTermGiphy").on("value", function (snap) {
@@ -179,10 +150,9 @@ database.ref("/searchTermGiphy").on("value", function (snap) {
                 var img = $("<img>").attr("src", imgURL);
                 $(cardImage).append(img);
 
-
-
-/////////////////////////////////
-// function newSearch () {
+                var cardContent = $("<div>");
+                $(cardContent).addClass("card-content");
+                $(card).append(cardContent);
 
                 var cardTitle = $("<span>");
                 $(cardTitle).addClass("card-title");
