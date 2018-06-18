@@ -87,6 +87,10 @@ require([
                 console.log("response", response)
                 console.log("City", response.attributes.City)
                 console.log("PLace Name", response.attributes.PlaceName)
+                database.ref().update({
+                    searchTermGiphy: response.attributes.City
+                })
+                createGif();
                 // If an address is successfully found, show it in the popup's content
                 view.popup.content = response.address;
                 console.log(view.popup.content)
@@ -138,7 +142,7 @@ database.ref("/searchTermGiphy").on("value", function (snap) {
     console.log("searchTermGiphy", searchTermGiphy);
     var emptyArray = [];
     var searchTermGiphy;
-    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + searchTermGiphy + "&api_key=4yRpEILyq50dh9npI0IKoifeIPUZKgdT&limit=10";
+    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + searchTermGiphy + "&api_key=4yRpEILyq50dh9npI0IKoifeIPUZKgdT&rating=pg&limit=10";
 
     var createGif = function () {
 
@@ -157,23 +161,50 @@ database.ref("/searchTermGiphy").on("value", function (snap) {
                 var results = response.data;
                 var imgURL = results[i].images.downsized.url;
                 console.log(results);
-                var picDiv = $('<div>').addClass("pic-div float");
-                var image = $('<img>').attr('src', imgURL);
-                picDiv.append(image);
-                $("#gif-div").append(picDiv);
-            }
-        });
-    }
-    createGif();
-})
+                // var picDiv = $('<div>').addClass("pic-div float");
+                // var image = $('<img>').attr('src', imgURL);
+                // picDiv.append(image);
+                // $("#gif-div").append(picDiv);
+
+                var cardCol = $("<div>").addClass("col s12 m4");
+                $("#gif-div").append(cardCol);
+
+                var card = $("<div>").addClass("card small");
+                $(cardCol).append(card);
+
+                cardImage = $("<div>");
+                $(cardImage).addClass("card-image");
+                $(card).append(cardImage);
+
+                var img = $("<img>").attr("src", imgURL);
+                $(cardImage).append(img);
 
 
 
 /////////////////////////////////
 // function newSearch () {
 
-//     $('#gif-div').empty();
+                var cardTitle = $("<span>");
+                $(cardTitle).addClass("card-title");
+                $(cardTitle).text("Placeholder");
+                $(cardContent).append(cardTitle);
 
-// for (i = 0; i < emptyArray.length; i++) {
+                // var cardp = $("<p>");
+                // $(cardp).text("Rating: " + gifRating);
+                // $(cardContent).append(cardTitle);
 
-// }
+                var cardAction = $("<div>");
+                $(cardAction).addClass("card-action");
+                $(card).append(cardAction);
+
+                var a = $("<a>");
+                $(a).attr("href", "#");
+                $(a).text("Download");
+                $(cardAction).append(a);
+                console.log("ran")
+
+            }
+        });
+    }
+    createGif();
+})
