@@ -12,13 +12,15 @@ require([
     // loads code that allows for viewing the map in 2D(Switch MapView to SceneView to turn map 3D)
     "esri/views/MapView",
     "esri/widgets/Search",
+    "esri/geometry/Point",
     // ensures the DOM is available before executing code.
     "dojo/domReady!"
 ], function (
     Locator,
     Map,
     MapView,
-    Search) {
+    Search,
+    Point) {
 
         var locatorTask = new Locator({
             url: "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer"
@@ -88,8 +90,22 @@ require([
                 // If the promise fails and no result is found, show a generic message
                 view.popup.content = "No address was found for this location";
             });
+            
+            centerMap(view, Point, lat, lon);
         });
     });
+
+function centerMap(view, Point, lat, lon)
+{
+	var pt = new Point({
+  		latitude: lat,
+  		longitude: lon
+	});
+    
+	// go to the given point
+	view.goTo(pt);
+}
+
 console.log('hello')
 // Initialize Firebase
 var config = {
