@@ -137,6 +137,7 @@ database.ref("/searchTermGiphy").on("value", function (snap) {
     var emptyArray = [];
     var searchTermGiphy;
     var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + searchTermGiphy + "&api_key=4yRpEILyq50dh9npI0IKoifeIPUZKgdT&rating=pg&limit=10";
+    // var queryURL = "https://pixabay.com/api/?key=9333797-288852953f23c75ab55a617e3&q=" + searchTermGiphy + "=photo";
 
     var createGif = function () {
 
@@ -144,12 +145,13 @@ database.ref("/searchTermGiphy").on("value", function (snap) {
         //call on API to get info
         console.log("queryURL", queryURL)
 
+        //ajax call to api to obtain info to put on site
         $.ajax({
             url: queryURL,
             method: 'GET'
 
         }).then(function (response) {
-
+        
             for (i = 0; i < 10; i++) {
 
                 var results = response.data;
@@ -201,3 +203,5 @@ database.ref("/searchTermGiphy").on("value", function (snap) {
     }
     createGif();
 })
+
+
