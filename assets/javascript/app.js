@@ -130,78 +130,100 @@ database.ref().update({
     something: "something"
 })
 
+// ==================================================================================================
+// ============================ Create Gifs ==========================================================
+// ==================================================================================================
 
-database.ref("/searchTermGiphy").on("value", function (snap) {
-    var searchTermGiphy = snap.val()
-    console.log("searchTermGiphy", searchTermGiphy);
-    var emptyArray = [];
-    var searchTermGiphy;
-    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + searchTermGiphy + "&api_key=4yRpEILyq50dh9npI0IKoifeIPUZKgdT&rating=pg&limit=10";
-    // var queryURL = "https://pixabay.com/api/?key=9333797-288852953f23c75ab55a617e3&q=" + searchTermGiphy + "=photo";
+// database.ref("/searchTermGiphy").on("value", function (snap) {
+//     var searchTermGiphy = snap.val()
+//     console.log("searchTermGiphy", searchTermGiphy);
+//     var emptyArray = [];
+//     var searchTermGiphy;
+//     var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + searchTermGiphy + "&api_key=4yRpEILyq50dh9npI0IKoifeIPUZKgdT&rating=pg&limit=10";
+//     // var queryURL = "https://pixabay.com/api/?key=9333797-288852953f23c75ab55a617e3&q=" + searchTermGiphy + "=photo";
 
-    var createGif = function () {
+//     var createGif = function () {
 
-        $("#gif-div").empty();
-        //call on API to get info
-        console.log("queryURL", queryURL)
+//         $("#gif-div").empty();
+//         //call on API to get info
+//         console.log("queryURL", queryURL)
 
-        //ajax call to api to obtain info to put on site
-        $.ajax({
-            url: queryURL,
-            method: 'GET'
+//         //ajax call to api to obtain info to put on site
+//         $.ajax({
+//             url: queryURL,
+//             method: 'GET'
 
-        }).then(function (response) {
+//         }).then(function (response) {
         
-            for (i = 0; i < 10; i++) {
+//             for (i = 0; i < 10; i++) {
 
-                var results = response.data;
-                var imgURL = results[i].images.downsized.url;
-                console.log(results);
-                // var picDiv = $('<div>').addClass("pic-div float");
-                // var image = $('<img>').attr('src', imgURL);
-                // picDiv.append(image);
-                // $("#gif-div").append(picDiv);
+//                 var results = response.data;
+//                 var imgURL = results[i].images.downsized.url;
+//                 console.log(results);
+//                 // var picDiv = $('<div>').addClass("pic-div float");
+//                 // var image = $('<img>').attr('src', imgURL);
+//                 // picDiv.append(image);
+//                 // $("#gif-div").append(picDiv);
 
-                var cardCol = $("<div>").addClass("col s12 m4");
-                $("#gif-div").append(cardCol);
+//                 var cardCol = $("<div>").addClass("col s12 m4");
+//                 $("#gif-div").append(cardCol);
 
-                var card = $("<div>").addClass("card small");
-                $(cardCol).append(card);
+//                 var card = $("<div>").addClass("card small");
+//                 $(cardCol).append(card);
 
-                cardImage = $("<div>");
-                $(cardImage).addClass("card-image");
-                $(card).append(cardImage);
+//                 cardImage = $("<div>");
+//                 $(cardImage).addClass("card-image");
+//                 $(card).append(cardImage);
 
-                var img = $("<img>").attr("src", imgURL);
-                $(cardImage).append(img);
+//                 var img = $("<img>").attr("src", imgURL);
+//                 $(cardImage).append(img);
 
-                var cardContent = $("<div>");
-                $(cardContent).addClass("card-content");
-                $(card).append(cardContent);
+//                 var cardContent = $("<div>");
+//                 $(cardContent).addClass("card-content");
+//                 $(card).append(cardContent);
 
-                var cardTitle = $("<span>");
-                $(cardTitle).addClass("card-title");
-                $(cardTitle).text("Placeholder");
-                $(cardContent).append(cardTitle);
+//                 var cardTitle = $("<span>");
+//                 $(cardTitle).addClass("card-title");
+//                 $(cardTitle).text("Placeholder");
+//                 $(cardContent).append(cardTitle);
 
-                // var cardp = $("<p>");
-                // $(cardp).text("Rating: " + gifRating);
-                // $(cardContent).append(cardTitle);
+//                 // var cardp = $("<p>");
+//                 // $(cardp).text("Rating: " + gifRating);
+//                 // $(cardContent).append(cardTitle);
 
-                var cardAction = $("<div>");
-                $(cardAction).addClass("card-action");
-                $(card).append(cardAction);
+//                 var cardAction = $("<div>");
+//                 $(cardAction).addClass("card-action");
+//                 $(card).append(cardAction);
 
-                var a = $("<a>");
-                $(a).attr("href", "#");
-                $(a).text("Download");
-                $(cardAction).append(a);
-                console.log("ran")
+//                 var a = $("<a>");
+//                 $(a).attr("href", "#");
+//                 $(a).text("Download");
+//                 $(cardAction).append(a);
+//                 console.log("ran")
 
-            }
-        });
+//             }
+//         });
+//     }
+//     createGif();
+// })
+
+
+// ==================================================================================================
+// ============================ Meetup API ==========================================================
+// ==================================================================================================
+
+var url = "https://api.meetup.com/find/upcoming_events?&key=413e32034783f3038f567864804610&lat=37.771&lon=-122.41&sign=true&photo-host=public&page=20"
+
+
+$.ajax({
+		
+    dataType:'jsonp',
+    method:'get',
+    url:url,
+    success:function(result) {
+        // console.log('back with ' + result.data.length +' results');
+        console.log(result);
+        var signedURL = result.meta.signed_url;
+
     }
-    createGif();
-})
-
-
+});	
