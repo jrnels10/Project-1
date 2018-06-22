@@ -1,6 +1,5 @@
 
 
-
 // ==================================================================================================
 // ============================ Map API =============================================================
 // ==================================================================================================
@@ -48,13 +47,13 @@ require([
             position: "top-right"
         });
         searchWidget.on("search-complete", function (event) {
-	    //Center map to closest location
+            //Center map to closest location
             var lat = event.results[0].results[0].extent.center.latitude; //get lat from 1st address result
-        var long = event.results[0].results[0].extent.center.longitude; //get long from 1st address result
+            var long = event.results[0].results[0].extent.center.longitude; //get long from 1st address result
 
             var alias_usa = ["usa", "united states", "united states of america", "america"];
 
-        if(alias_usa.indexOf(event.target.searchTerm.toLowerCase()) !== -1) {
+            if (alias_usa.indexOf(event.target.searchTerm.toLowerCase()) !== -1) {
                 long = -99.771;
                 lat = 38.22;
                 console.log("test");
@@ -62,20 +61,20 @@ require([
 
             var alias_canada = ["can", "canada"];
 
-            if(alias_canada.indexOf(event.target.searchTerm.toLowerCase()) !== -1) {
-                    long = -100.65;
-                    lat = 55.101;
-                    console.log("test");
-                }
+            if (alias_canada.indexOf(event.target.searchTerm.toLowerCase()) !== -1) {
+                long = -100.65;
+                lat = 55.101;
+                console.log("test");
+            }
 
-                if(event.target.searchTerm.indexOf(',') !== -1){
-                    var isComma = true;
-                } else {
-                    var isComma = false;
-                }
+            if (event.target.searchTerm.indexOf(',') !== -1) {
+                var isComma = true;
+            } else {
+                var isComma = false;
+            }
 
-	    centerMap(view, Point, lat, long, isComma); //center map
-		
+            centerMap(view, Point, lat, long, isComma); //center map
+
             console.log("Search started.");
             console.log("results", event)
             console.log("result", event.target.searchTerm)
@@ -96,6 +95,13 @@ require([
             var lat = Math.round(event.mapPoint.latitude * 1000) / 1000;
             var lon = Math.round(event.mapPoint.longitude * 1000) / 1000;
             console.log("This is the Jacob Branch");
+
+            database.ref().update({
+                lat: lat,
+                lon: lon
+            })
+
+            meetupAPI();
 
             view.popup.open({
                 // Set the popup's title to the coordinates of the clicked location
@@ -118,29 +124,28 @@ require([
                 // If the promise fails and no result is found, show a generic message
                 view.popup.content = "No address was found for this location";
             });
-            
+
             centerMap(view, Point, lat, lon, true);
         });
     });
 
-function centerMap(view, Point, lat, lon, zoom)
-{
-	var pt = new Point({
-  		latitude: lat,
-  		longitude: lon
+function centerMap(view, Point, lat, lon, zoom) {
+    var pt = new Point({
+        latitude: lat,
+        longitude: lon
     });
-    
-    if(zoom === true) {
+
+    if (zoom === true) {
         var scaleValue = 150000;
-    } else if(zoom === false) {
+    } else if (zoom === false) {
         var scaleValue = 20000000;
     }
-    
-	// go to the given point
+
+    // go to the given point
     view.goTo({
         target: pt,
         scale: scaleValue
-      });
+    });
 }
 
 console.log('hello')
@@ -185,7 +190,7 @@ database.ref().update({
 //             method: 'GET'
 
 //         }).then(function (response) {
-        
+
 //             for (i = 0; i < 10; i++) {
 
 //                 var results = response.data;
@@ -243,19 +248,43 @@ database.ref().update({
 // ============================ Meetup API ==========================================================
 // ==================================================================================================
 
-var url = "https://api.meetup.com/find/upcoming_events?&key=413e32034783f3038f567864804610&lat=37.771&lon=-122.41&sign=true&photo-host=public&page=20"
 
+var meetupAPI = function () {
+
+    database.ref().once("value").then(function (snap) {
+        var url = "https://api.meetup.com/find/upcoming_events?&key=413e32034783f3038f567864804610&lat=" + snap.val().lat + "&lon=" + snap.val().lon + "&sign=true&photo-host=public&page=20";
+        $.ajax({
+
+            dataType: 'jsonp',
+            method: 'get',
+            url: url,
+            success: function (result) {
+                // console.log('back with ' + result.data.length +' results');
+                console.log(result);
+                var signedURL = result.meta.signed_url;
+                for (var i = 0; i < signedURL.length; i++) {
+                    var meetupDetails = [];
+                    var grouplabel = signedURL[i].group.name;
+                    var groupLat = signedURL[i].group.lat;
+                    var groupLon = signedURL[i].group.lon;
+                    console.log('group: ' + grouplabel + ', lat: ' + groupLat + ', lon: ' + groupLon);
+                }
+            }
+        });
+    })
+
+}
 
 $.ajax({
-		
-    dataType:'jsonp',
-    method:'get',
-    url:url,
-    success:function(result) {
+
+    dataType: 'jsonp',
+    method: 'get',
+    url: url,
+    success: function (result) {
         // console.log('back with ' + result.data.length +' results');
         console.log(result);
         var signedURL = result.meta.signed_url;
 
     }
-});	
+});
 
