@@ -1,6 +1,5 @@
 
 
-
 // ==================================================================================================
 // ============================ Map API =============================================================
 // ==================================================================================================
@@ -74,6 +73,13 @@ require([
             var lat = Math.round(event.mapPoint.latitude * 1000) / 1000;
             var lon = Math.round(event.mapPoint.longitude * 1000) / 1000;
             console.log("This is the Jacob Branch");
+
+            database.ref().update({
+                lat: lat,
+                lon: lon
+            })
+
+            meetupAPI();
 
             view.popup.open({
                 // Set the popup's title to the coordinates of the clicked location
@@ -212,18 +218,24 @@ database.ref().update({
 // ============================ Meetup API ==========================================================
 // ==================================================================================================
 
-var url = "https://api.meetup.com/find/upcoming_events?&key=413e32034783f3038f567864804610&lat=37.771&lon=-122.41&sign=true&photo-host=public&page=20"
 
+var meetupAPI = function() {
 
-$.ajax({
-		
-    dataType:'jsonp',
-    method:'get',
-    url:url,
-    success:function(result) {
-        // console.log('back with ' + result.data.length +' results');
-        console.log(result);
-        var signedURL = result.meta.signed_url;
+    database.ref().once("value").then(function(snap) {
+        var url = "https://api.meetup.com/find/upcoming_events?&key=413e32034783f3038f567864804610&lat=" + snap.val().lat + "&lon=" + snap.val().lon + "&sign=true&photo-host=public&page=20";
+        $.ajax({
+                
+            dataType:'jsonp',
+            method:'get',
+            url:url,
+            success:function(result) {
+                // console.log('back with ' + result.data.length +' results');
+                console.log(result);
+                var signedURL = result.meta.signed_url;
+        
+            }
+        });	
 
-    }
-});	
+    })
+
+}
