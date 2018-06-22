@@ -10,6 +10,7 @@ require([
     "esri/Map",
     // loads code that allows for viewing the map in 2D(Switch MapView to SceneView to turn map 3D)
     "esri/views/MapView",
+    "esri/Graphic",
     "esri/widgets/Search",
     "esri/geometry/Point",
     // ensures the DOM is available before executing code.
@@ -18,6 +19,7 @@ require([
     Locator,
     Map,
     MapView,
+    Graphic,
     Search,
     Point) {
 
@@ -30,13 +32,36 @@ require([
             ground: "world-elevation"
 
         });
-
+        
         var view = new MapView({
             scale: 20000000,
             center: [-99.53613281247335, 36.77409249463308],
             container: "viewDiv",
             map: maplocation
         });
+
+        var point = {
+            type: "point", // autocasts as new Point()
+            longitude: -49.97,
+            latitude: 41.73
+        };
+
+        // Create a symbol for drawing the point
+        var markerSymbol = {
+            type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+            color: [226, 119, 40],
+            outline: { // autocasts as new SimpleLineSymbol()
+                color: [255, 255, 255],
+                width: 2
+            }
+        };
+
+        // Create a graphic and add the geometry and symbol to it
+        var pointGraphic = new Graphic({
+            geometry: point,
+            symbol: markerSymbol
+        });
+        view.graphics.addMany([pointGraphic]);
         // to search by name on map
         var searchWidget = new Search({
             view: view
@@ -79,24 +104,24 @@ require([
                 lon: lon
             })
 
-            
+
             meetupAPI();
-            setTimeout(function() {
-                database.ref().once("value").then(function (snap) {
-                    var eventName;
-                    eventName = snap.val().eventName
-                    view.popup.open({
-                        // Set the popup's title to the coordinates of the clicked location
-                        title: eventName,
-                        content: lat + " " + lon,
-                        location: {latitude: snap.val().eventLat, longitude: snap.val().eventLon} // Set the location of the popup to the clicked location
-                    });
-                })
-            }, 1000)
+            // setTimeout(function () {
+            //     database.ref().once("value").then(function (snap) {
+            //         var eventName;
+            //         eventName = snap.val().eventName
+            //         view.popup.open({
+            //             // Set the popup's title to the coordinates of the clicked location
+            //             title: eventName,
+            //             content: lat + " " + lon,
+            //             location: { latitude: snap.val().eventLat, longitude: snap.val().eventLon } // Set the location of the popup to the clicked location
+            //         });
+            //     })
+            // }, 1000)
 
             console.log("map", event.mapPoint);
-            
-            
+
+
 
             // Execute a reverse geocode using the clicked location
             locatorTask.locationToAddress(event.mapPoint).then(function (response) {
@@ -117,7 +142,37 @@ require([
 
             centerMap(view, Point, lat, lon);
         });
-    });
+
+        database.ref("/events").on("child_added", function(snap) {
+            console.log(snap.val());
+            var point = {
+                type: "point", // autocasts as new Point()
+                longitude: snap.val().eventLon,
+                latitude: snap.val().eventLat
+            };
+    
+            // Create a symbol for drawing the point
+            var markerSymbol = {
+                type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+                color: [226, 119, 40],
+                outline: { // autocasts as new SimpleLineSymbol()
+                    color: [255, 255, 255],
+                    width: 2
+                }
+            };
+    
+            // Create a graphic and add the geometry and symbol to it
+            var pointGraphic = new Graphic({
+                geometry: point,
+                symbol: markerSymbol
+            });
+            view.graphics.addMany([pointGraphic]);
+        })
+    }
+
+
+
+);
 
 function centerMap(view, Point, lat, lon) {
 
@@ -243,12 +298,14 @@ var meetupAPI = function () {
             success: function (result) {
                 // console.log('back with ' + result.data.length +' results');
                 console.log(result);
+                for (i = 0; i < result.data.events.length; i++) {
+                    database.ref("/events").push({
+                        eventName: result.data.events[i].name,
+                        eventLat: result.data.events[i].venue.lat,
+                        eventLon: result.data.events[i].venue.lon
+                    })
 
-                database.ref().update({
-                    eventName: result.data.events["6"].name,
-                    eventLat: result.data.events["6"].venue.lat ,
-                    eventLon: result.data.events["6"].venue.lon
-                })
+                }
 
             }
         });
