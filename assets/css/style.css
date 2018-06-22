@@ -1,8 +1,10 @@
-
+body {
+    height: 100vh
+}
 #viewDiv {
     padding: 0;
     margin: 0;
-    height: 91vh;
+    height: 93vh;
     width: 100%;
 }
 #gifDiv {
@@ -10,15 +12,20 @@
 }
 
 nav {
-    height: 8vh;
-    margin: 0;
+    /* height: ; */
+    background: 
+    linear-gradient(
+       #ff5858, #f85787
+      );
 }
 
 .esri-search__container {
     height: 40px;
     /* background-color: rgb(0, 162, 255); */
+    
 }
 
 #container {
     margin-top: 50px;
+    background: #f85787
 }
