@@ -76,7 +76,29 @@ require([
             var lat = event.results[0].results[0].extent.center.latitude; //get lat from 1st address result
             var long = event.results[0].results[0].extent.center.longitude; //get long from 1st address result
 
-            centerMap(view, Point, lat, long); //center map
+            var alias_usa = ["usa", "united states", "united states of america", "america"];
+
+            if (alias_usa.indexOf(event.target.searchTerm.toLowerCase()) !== -1) {
+                long = -99.771;
+                lat = 38.22;
+                console.log("test");
+            }
+
+            var alias_canada = ["can", "canada"];
+
+            if (alias_canada.indexOf(event.target.searchTerm.toLowerCase()) !== -1) {
+                long = -100.65;
+                lat = 55.101;
+                console.log("test");
+            }
+
+            if (event.target.searchTerm.indexOf(',') !== -1) {
+                var isComma = true;
+            } else {
+                var isComma = false;
+            }
+
+            centerMap(view, Point, lat, long, isComma); //center map
 
             console.log("Search started.");
             console.log("results", event)
@@ -86,7 +108,7 @@ require([
             database.ref().update({
                 searchTermGiphy: event.target.searchTerm
             })
-            createGif();
+            meetupAPI();
         });
 
 
@@ -140,7 +162,7 @@ require([
                 view.popup.content = "No address was found for this location";
             });
 
-            centerMap(view, Point, lat, lon);
+            centerMap(view, Point, lat, lon, true);
         });
 
         database.ref("/events").on("child_added", function(snap) {
@@ -174,15 +196,23 @@ require([
 
 );
 
-function centerMap(view, Point, lat, lon) {
-
+function centerMap(view, Point, lat, lon, zoom) {
     var pt = new Point({
         latitude: lat,
         longitude: lon
     });
 
+    if (zoom === true) {
+        var scaleValue = 300000;
+    } else if (zoom === false) {
+        var scaleValue = 20000000;
+    }
+
     // go to the given point
-    view.goTo(pt);
+    view.goTo({
+        target: pt,
+        scale: scaleValue
+    });
 }
 
 console.log('hello')
