@@ -19,19 +19,9 @@ require([
     Locator,
     Map,
     MapView,
-    Graphic,
     Search,
     Point) {
-        var meetPoint = {
-            type: "point", // autocasts as new Point()
-            longitude: -49.97,
-            latitude: 41.73
-        };
-        // Create a graphic and add the geometry and symbol to it
-        var pointGraphic = new Graphic({
-            geometry: point,
-            symbol: markerSymbol
-        });
+       
 
         var locatorTask = new Locator({
             url: "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer"
@@ -98,22 +88,18 @@ require([
                 lon: lon
             })
 
-<<<<<<< HEAD
-
-
-
-=======
             
             meetupAPI();
             setTimeout(function() {
                 database.ref().once("value").then(function (snap) {
                     var eventName;
                     eventName = snap.val().eventName
+ 
                     view.popup.open({
                         // Set the popup's title to the coordinates of the clicked location
                         title: eventName,
                         content: lat + " " + lon,
-                        location: {latitude: snap.val().eventLat, longitude: snap.val().eventLon} // Set the location of the popup to the clicked location
+                        location: {latitude: eventLat, longitude: eventLon} // Set the location of the popup to the clicked location
                     });
                 })
             }, 1000)
@@ -122,7 +108,6 @@ require([
             
             
 
->>>>>>> 87ac048f7c17f8d60afeeb26344a080fa438c18f
             // Execute a reverse geocode using the clicked location
             locatorTask.locationToAddress(event.mapPoint).then(function (response) {
                 console.log("response", response)
@@ -145,10 +130,6 @@ require([
     });
 
 function centerMap(view, Point, lat, lon) {
-<<<<<<< HEAD
-=======
-
->>>>>>> 87ac048f7c17f8d60afeeb26344a080fa438c18f
     var pt = new Point({
         latitude: lat,
         longitude: lon
@@ -271,7 +252,6 @@ var meetupAPI = function () {
             success: function (result) {
                 // console.log('back with ' + result.data.length +' results');
                 console.log(result);
-<<<<<<< HEAD
                 var signedURL = result.data.events;
                 for (var i = 0; i < signedURL.length; i++) {
                     var meetupDetails = [];
@@ -280,7 +260,6 @@ var meetupAPI = function () {
                     var groupLon = signedURL[i].group.lon;
                     console.log('group: ' + grouplabel + ', lat: ' + groupLat + ', lon: ' + groupLon);
                 }
-=======
 
                 database.ref().update({
                     eventName: result.data.events["6"].name,
@@ -288,14 +267,9 @@ var meetupAPI = function () {
                     eventLon: result.data.events["6"].venue.lon
                 })
 
->>>>>>> 87ac048f7c17f8d60afeeb26344a080fa438c18f
             }
         });
 
     })
 
 }
-<<<<<<< HEAD
-meetupAPI();
-=======
->>>>>>> 87ac048f7c17f8d60afeeb26344a080fa438c18f
