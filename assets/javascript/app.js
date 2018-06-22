@@ -212,7 +212,7 @@ database.ref().update({
 // ============================ Meetup API ==========================================================
 // ==================================================================================================
 
-var url = "https://api.meetup.com/find/upcoming_events?&key=413e32034783f3038f567864804610&lat=37.771&lon=-122.41&sign=true&photo-host=public&page=20"
+var url = "https://api.meetup.com/find/upcoming_events?&key=413e32034783f3038f567864804610&lat=37.77&lon=-122.41&sign=true&photo-host=public&page=20"
 
 
 $.ajax({
@@ -220,10 +220,14 @@ $.ajax({
     dataType:'jsonp',
     method:'get',
     url:url,
-    success:function(result) {
-        // console.log('back with ' + result.data.length +' results');
+    }).then(function (result) {
         console.log(result);
-        var signedURL = result.meta.signed_url;
-
+        var signedURL = result.data.events;
+          for (var i = 0; i < signedURL.length; i++) {
+          var meetupDetails =[];
+          var grouplabel = signedURL[i].group.name;
+          var groupLat = signedURL[i].group.lat;
+          var groupLon = signedURL[i].group.lon;
+          console.log('group: ' + grouplabel + ', lat: ' + groupLat + ', lon: ' + groupLon);
     }
 });	
