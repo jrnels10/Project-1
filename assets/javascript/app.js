@@ -19,9 +19,18 @@ require([
     Locator,
     Map,
     MapView,
+    Graphic,
     Search,
     Point) {
-       
+        var point = {
+            type: "point", // autocasts as new Point()
+            longitude: -49.97,
+            latitude: 41.73
+          };
+          var pointGraphic = new Graphic({
+            geometry: point,
+            // symbol: markerSymbol
+          });
 
         var locatorTask = new Locator({
             url: "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer"
