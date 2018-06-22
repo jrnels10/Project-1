@@ -232,10 +232,16 @@ var meetupAPI = function() {
                 // console.log('back with ' + result.data.length +' results');
                 console.log(result);
                 var signedURL = result.meta.signed_url;
-        
+                for (var i = 0; i < signedURL.length; i++) {
+                var meetupDetails =[];
+                var grouplabel = signedURL[i].group.name;
+                var groupLat = signedURL[i].group.lat;
+                var groupLon = signedURL[i].group.lon;
+                console.log('group: ' + grouplabel + ', lat: ' + groupLat + ', lon: ' + groupLon);
             }
         });	
 
     })
 
 }
+
