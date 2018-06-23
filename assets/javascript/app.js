@@ -3,7 +3,10 @@
 // ==================================================================================================
 // ============================ Map API =============================================================
 // ==================================================================================================
-
+var mapOne;
+var mapTwo;
+var mapThree;
+var view;
 require([
     "esri/tasks/Locator",
     // loads code specific to creating a map
@@ -23,21 +26,34 @@ require([
     Search,
     Point) {
 
+        //definition for: hybri. Try one of these: "streets", "satellite",
+        //"hybrid", "terrain", "topo", "gray", "dark-gray", "oceans", "national-geographic",
+        //"osm", "dark-gray-vector", "gray-vector", "streets-vector", "topo-vector",
+        //"streets-night-vector", "streets-relief-vector", "streets-navigation-vector"
+        mapOne = new Map({
+            basemap: "hybrid",
+        });
+        mapTwo = new Map({
+            basemap: 'gray-vector',
+        })
+        mapThree = new Map({
+            basemap: 'streets',
+        })
+
         var locatorTask = new Locator({
             url: "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer"
         })
 
         var maplocation = new Map({
             basemap: "streets",
-            ground: "world-elevation"
 
         });
-        
-        var view = new MapView({
+
+        view = new MapView({
             scale: 20000000,
             center: [-99.53613281247335, 36.77409249463308],
             container: "viewDiv",
-            map: maplocation
+            map: mapOne
         });
 
         var point = {
@@ -55,12 +71,34 @@ require([
                 width: 2
             }
         };
+        // Create an object for storing attributes related to the line
+        var lineAtt = {
+            Name: "Keystone Pipeline",
+            Owner: "TransCanada",
+            Length: "3,456 km"
+        };
+        console.log(lineAtt);
 
         // Create a graphic and add the geometry and symbol to it
         var pointGraphic = new Graphic({
             geometry: point,
-            symbol: markerSymbol
+            symbol: markerSymbol,
+            attributes: lineAtt,
+            popupTemplate: { // autocasts as new PopupTemplate()
+                title: "{Name}",
+                content: [{
+                    type: "fields",
+                    fieldInfos: [{
+                        fieldName: "Name"
+                    }, {
+                        fieldName: "Owner"
+                    }, {
+                        fieldName: "Length"
+                    }]
+                }]
+            }
         });
+        console.log(pointGraphic)
         view.graphics.addMany([pointGraphic]);
         // to search by name on map
         var searchWidget = new Search({
@@ -105,6 +143,9 @@ require([
             console.log("result", event.target.searchTerm)
             searchTermGiphy = event.target.searchTerm
 
+
+            //CLEARS POINTS ON NEW SEARCH
+            view.graphics.removeAll();
 
             database.ref().update({
                 lat: lat,
@@ -175,7 +216,7 @@ require([
                 longitude: snap.val().eventLon,
                 latitude: snap.val().eventLat
             };
-    
+
             // Create a symbol for drawing the point
             var markerSymbol = {
                 type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
@@ -185,19 +226,44 @@ require([
                     width: 2
                 }
             };
-    
+
             // Create a graphic and add the geometry and symbol to it
             var pointGraphic = new Graphic({
                 geometry: point,
-                symbol: markerSymbol
+                symbol: markerSymbol,
+                popupTemplate: { // autocasts as new PopupTemplate()
+                    title: snap.val().eventName,
+                    content: [{
+                      type: "fields",
+                      fieldInfos: [{
+                        fieldName: "Name"
+                      }, {
+                        fieldName: "Owner"
+                      }, {
+                        fieldName: "Length"
+                      }]
+                    }]
+                  }
             });
-            view.graphics.addMany([pointGraphic]);
+            view.graphics.add(pointGraphic);
         })
     }
 
 
 
+
 );
+
+$('#grey-vector').on('click', function () {
+    view.map = mapTwo;
+})
+$('#streets').on('click', function () {
+    view.map = mapThree;
+})
+$('#hybrid').on('click', function () {
+    view.map = mapOne;
+})
+
 
 function centerMap(view, Point, lat, lon, zoom) {
     var pt = new Point({
@@ -260,7 +326,8 @@ var meetupAPI = function () {
                         database.ref("/events").push({
                             eventName: result.data.events[i].name,
                             eventLat: result.data.events[i].venue.lat,
-                            eventLon: result.data.events[i].venue.lon
+                            eventLon: result.data.events[i].venue.lon,
+                            eventDescription: result.data.evens[i].description
                         })
 
                     } else {
