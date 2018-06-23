@@ -53,9 +53,10 @@ require([
             container: "viewDiv",
             map: mapOne
         });
+
         //REMOVE EVENTS FROM DATABASE SO THE POINTS DONT SHOW UP FROM PREVIOUS SEARCHES
         database.ref("/events").remove();
-        
+
         // to search by name on map
         var searchWidget = new Search({
             view: view
@@ -110,6 +111,7 @@ require([
 
             meetupAPI();
         });
+
         //WHEN SEARCH IS DONE IT WILL TAKE INFO FROM DATABASE AND ADD POINTS WHERE THE EVENTS ARE
         database.ref("/events").on("child_added", function(snap) {
             console.log(snap.val());
@@ -134,6 +136,7 @@ require([
                 geometry: point,
                 symbol: markerSymbol,
                 popupTemplate: { // autocasts as new PopupTemplate()
+
                     title: "<a target='_blank' href='" + snap.val().eventLink + "'>" + snap.val().eventName + "</a>",
                     content: "<p>Group: " + snap.val().eventGroupName + "</p><p>Time: " + snap.val().eventTime + " Date: " + snap.val().eventDate + "</p>"
                     + "<p> RSVP Count: " + snap.val().eventRsvpCount + "  Waitlist: " + snap.val().eventWaitlist + "</p>"
@@ -202,12 +205,15 @@ database.ref().update({
 // ==================================================================================================
 // ============================ Meetup API ==========================================================
 // ==================================================================================================
-
-
+// &text=" + userMeetupText + "
+var userMeetupText;
+$('#add-user-search').on('click', function () {
+    userMeetupText = $('#user-search').val();
+})
 var meetupAPI = function () {
-
     database.ref().once("value").then(function (snap) {
-        var url = "https://api.meetup.com/find/upcoming_events?&key=413e32034783f3038f567864804610&lat=" + snap.val().lat + "&lon=" + snap.val().lon + "&sign=true&photo-host=public&page=50";
+        console.log('user search: ' + userMeetupText);
+        var url = "https://api.meetup.com/find/upcoming_events?&key=413e32034783f3038f567864804610&lat=" + snap.val().lat + "&lon=" + snap.val().lon + "&sign=true&photo-host=public&text=" + userMeetupText + "&page=50";
         $.ajax({
 
             dataType: 'jsonp',
@@ -239,6 +245,7 @@ var meetupAPI = function () {
     })
 
 }
+
 
 var parseTime = function(timeInput) {
     var time = timeInput; // your input
@@ -292,3 +299,4 @@ function convertDate(UNIX_timestamp){
   }
 
   console.log(convertDate(1531357200000));
+
