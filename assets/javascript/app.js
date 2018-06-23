@@ -152,7 +152,12 @@ require([
 
 
 );
+
+
+
+
 //BUTTONS SO CHANGE BASE LAYER OF MAP
+
 $('#grey-vector').on('click', function () {
     view.map = mapTwo;
 })
