@@ -135,7 +135,7 @@ require([
                 symbol: markerSymbol,
                 popupTemplate: { // autocasts as new PopupTemplate()
                     title: "<a target='_blank' href='" + snap.val().eventLink + "'>" + snap.val().eventName + "</a>",
-                    content: "<p>Group: " + snap.val().eventGroupName + "</p><p>Time: " + parseTime(snap.val().eventTime) + " Date: " + snap.val().eventDate + "</p>"
+                    content: "<p>Group: " + snap.val().eventGroupName + "</p><p>Time: " + snap.val().eventTime + " Date: " + snap.val().eventDate + "</p>"
                     + "<p> RSVP Count: " + snap.val().eventRsvpCount + "  Waitlist: " + snap.val().eventWaitlist + "</p>"
                   }
             });
@@ -220,14 +220,15 @@ var meetupAPI = function () {
             success: function (result) {
                 console.log(result);
                 for (i = 0; i < result.data.events.length; i++) {
+                    console.log("ran")
                         database.ref("/events").push({
                             eventName: result.data.events[i].name,
                             eventLat: result.data.events[i].group.lat,
                             eventLon: result.data.events[i].group.lon,
                             // eventDescription: result.data.events[i].description,
                             // eventAddress: result.data.events[i].venue.address_1,
-                            eventTime: result.data.events[i].local_time,
-                            eventDate: result.data.events[i].local_date,
+                            eventTime: convertTime(result.data.events[i].time),
+                            eventDate: convertDate(result.data.events[i].time),
                             eventRsvpCount: result.data.events[i].yes_rsvp_count,
                             eventWaitlist: result.data.events[i].waitlist_count,
                             eventGroupName: result.data.events[i].group.name,
@@ -270,3 +271,31 @@ var parseTime = function(timeInput) {
 
     return timeValue;
 }
+<<<<<<< HEAD
+=======
+
+
+
+function convertTime(UNIX_timestamp){
+  var a = new Date(UNIX_timestamp);
+  var hour = a.getHours();
+  var min = a.getMinutes();
+  var sec = a.getSeconds();
+  var time = hour + ':' + min + ':' + sec ;
+  return parseTime(time);
+}
+
+console.log(parseTime(convertTime(1531357200000)));
+
+function convertDate(UNIX_timestamp){
+    var a = new Date(UNIX_timestamp);
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var year = a.getFullYear();
+    var month = months[a.getMonth()];
+    var date = a.getDate();
+    var time = date + ' ' + month + ' ' + year;
+    return time;
+  }
+
+  console.log(convertDate(1531357200000));
+>>>>>>> 72bf51df012acdce3d215eece3d6db04c3c9625e
