@@ -110,6 +110,9 @@ require([
 
             meetupAPI();
         });
+        database.ref('user-search').on('value',function(snap){
+            view.graphics.removeAll();
+        })
         //WHEN SEARCH IS DONE IT WILL TAKE INFO FROM DATABASE AND ADD POINTS WHERE THE EVENTS ARE
         database.ref("/events").on("child_added", function(snap) {
             console.log(snap.val());
@@ -139,7 +142,7 @@ require([
                     + "<p> RSVP Count: " + snap.val().eventRsvpCount + "  Waitlist: " + snap.val().eventWaitlist + "</p>"
                   }
             });
-
+            // pointGraphic.className('hello');
             view.graphics.add(pointGraphic);
         })
         //END OF ADDING POINTS
@@ -206,7 +209,10 @@ database.ref().update({
 // &text=" + userMeetupText + "
 var userMeetupText;
 $('#add-user-search').on('click', function () {
+    database.ref("/events").remove();
+    database.ref('user-search').set(true);
     userMeetupText = $('#user-search').val();
+    meetupAPI();
 })
 var meetupAPI = function () {
     database.ref().once("value").then(function (snap) {
@@ -271,8 +277,6 @@ var parseTime = function(timeInput) {
 
     return timeValue;
 }
-<<<<<<< HEAD
-=======
 
 
 
@@ -298,4 +302,3 @@ function convertDate(UNIX_timestamp){
   }
 
   console.log(convertDate(1531357200000));
->>>>>>> 72bf51df012acdce3d215eece3d6db04c3c9625e
