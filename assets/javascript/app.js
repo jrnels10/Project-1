@@ -46,11 +46,10 @@ require([
 
         var maplocation = new Map({
             basemap: "streets",
-            ground: "world-elevation"
 
         });
 
-         view = new MapView({
+        view = new MapView({
             scale: 20000000,
             center: [-99.53613281247335, 36.77409249463308],
             container: "viewDiv",
@@ -72,12 +71,34 @@ require([
                 width: 2
             }
         };
+        // Create an object for storing attributes related to the line
+        var lineAtt = {
+            Name: "Keystone Pipeline",
+            Owner: "TransCanada",
+            Length: "3,456 km"
+        };
+        console.log(lineAtt);
 
         // Create a graphic and add the geometry and symbol to it
         var pointGraphic = new Graphic({
             geometry: point,
-            symbol: markerSymbol
+            symbol: markerSymbol,
+            attributes: lineAtt,
+            popupTemplate: { // autocasts as new PopupTemplate()
+                title: "{Name}",
+                content: [{
+                    type: "fields",
+                    fieldInfos: [{
+                        fieldName: "Name"
+                    }, {
+                        fieldName: "Owner"
+                    }, {
+                        fieldName: "Length"
+                    }]
+                }]
+            }
         });
+        console.log(pointGraphic)
         view.graphics.addMany([pointGraphic]);
         // to search by name on map
         var searchWidget = new Search({
