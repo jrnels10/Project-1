@@ -35,25 +35,31 @@
     <!-- NAV TO WORK WITH LATER -->
     <nav>
         <div class="nav-wrapper">
+                <ul  id='btn-space' class="left hide-on-med-and-down">
+                        <li><a id="grey-vector" class="waves-effect waves-light btn purple">Grey</a></li>
+                        <li><a id="streets" class="waves-effect waves-light btn purple">Streets</a></li>
+                        <li><a id="hybrid" class="waves-effect waves-light btn purple">Hybrid</a></li>
+                      </ul>
+            </ul>
+
             <a href="#" class="brand-logo center">Meetup Locator</a>
             <ul id="nav-mobile" class="right hide-on-med-and-down">
                 <li>
                     <a href="badges.html">Favorites</a>
                 </li>
                 <li>
-                    <a href="collapsible.html">About</a>
+                    <a href="about.html">About</a>
                 </li>
             </ul>
         </div>
     </nav>
-    <button id="grey-vector">Grey</button>
-    <button id="streets">Streets</button>
-    <button id="hybrid">Hybrid</button>
+
     <label for="user-input">Search for event</label>
     <input type="text" id="user-search">
     <!-- Button triggers new state to be added -->
     <input class="btn btn-success m-2" id="add-user-search" type="submit" value="Add User Search">
     <div id="viewDiv"></div>
+
 
 
 
