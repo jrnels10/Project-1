@@ -202,12 +202,15 @@ database.ref().update({
 // ==================================================================================================
 // ============================ Meetup API ==========================================================
 // ==================================================================================================
-
-
+// &text=" + userMeetupText + "
+var userMeetupText;
+$('#add-user-search').on('click', function () {
+    userMeetupText = $('#user-search').val();
+})
 var meetupAPI = function () {
-
     database.ref().once("value").then(function (snap) {
-        var url = "https://api.meetup.com/find/upcoming_events?&key=413e32034783f3038f567864804610&lat=" + snap.val().lat + "&lon=" + snap.val().lon + "&sign=true&photo-host=public&page=50";
+        console.log('user search: ' + userMeetupText);
+        var url = "https://api.meetup.com/find/upcoming_events?&key=413e32034783f3038f567864804610&lat=" + snap.val().lat + "&lon=" + snap.val().lon + "&sign=true&photo-host=public&text=" + userMeetupText + "&page=50";
         $.ajax({
 
             dataType: 'jsonp',
