@@ -256,7 +256,26 @@ require([
 
 );
 
+//----------buttons on map to control view types:--------
+
+        //var newBtn = document.createElement('input');
+        //newBtn.setAttribute('type','button');
+        //newBtn.setAttribute('name','sal');
+        //newBtn.attachEvent('onclick',Hi);
+        //cell1.appendChild(newBtn);
+
+        
+        // $('button').on('click', function(){
+        //     var parent = $(this).parent();
+        //     var btn = parent.add("<button>");
+        //     btn.addClass('newBtn');               
+        //     btn.append('<button>Grey</button>');
+
+    // $('button').on('click', function(){
 $('#grey-vector').on('click', function () {
+    // var parent = $(this).parent();
+    // var btn = parent.add("<button>");
+    // btn.append('<button>Grey</button>');
     view.map = mapTwo;
 })
 $('#streets').on('click', function () {

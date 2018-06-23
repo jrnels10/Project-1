@@ -19,6 +19,15 @@ nav {
       );
 }
 
+.btn {
+    font-size: 12.5px;
+    margin: 0;
+}
+
+#btn-space li {
+    margin: 0;
+}
+
 .esri-search__container {
     height: 40px;
     /* background-color: rgb(0, 162, 255); */
