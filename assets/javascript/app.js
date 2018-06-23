@@ -1,5 +1,3 @@
-
-
 // ==================================================================================================
 // ============================ Map API =============================================================
 // ==================================================================================================
@@ -55,53 +53,9 @@ require([
             container: "viewDiv",
             map: mapOne
         });
-
-        var point = {
-            type: "point", // autocasts as new Point()
-            longitude: -49.97,
-            latitude: 41.73
-        };
-
-        // Create a symbol for drawing the point
-        var markerSymbol = {
-            type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
-            color: [226, 119, 40],
-            outline: { // autocasts as new SimpleLineSymbol()
-                color: [255, 255, 255],
-                width: 2
-            }
-        };
-        // Create an object for storing attributes related to the line
-        var lineAtt = {
-            Name: "Keystone Pipeline",
-            Owner: "TransCanada",
-            Length: "3,456 km"
-        };
-        console.log(lineAtt);
-
-        // Create a graphic and add the geometry and symbol to it
-        var pointGraphic = new Graphic({
-            geometry: point,
-            symbol: markerSymbol,
-            attributes: lineAtt,
-            popupTemplate: { // autocasts as new PopupTemplate()
-                title: "{Name}",
-                content: [{
-                    type: "fields",
-                    fieldInfos: [{
-                        fieldName: "Name"
-                    }, {
-                        fieldName: "Owner"
-                    }, {
-                        fieldName: "Length"
-                    }]
-                }]
-            }
-        });
-        console.log(pointGraphic)
-        view.graphics.addMany([pointGraphic]);
-
-
+        //REMOVE EVENTS FROM DATABASE SO THE POINTS DONT SHOW UP FROM PREVIOUS SEARCHES
+        database.ref("/events").remove();
+        
         // to search by name on map
         var searchWidget = new Search({
             view: view
@@ -115,7 +69,7 @@ require([
             //Center map to closest location
             var lat = event.results[0].results[0].extent.center.latitude; //get lat from 1st address result
             var long = event.results[0].results[0].extent.center.longitude; //get long from 1st address result
-
+            //THIS IS A FIX FOR CENTERING ON CONTINETS
             var alias_usa = ["usa", "united states", "united states of america", "america"];
 
             if (alias_usa.indexOf(event.target.searchTerm.toLowerCase()) !== -1) {
@@ -139,12 +93,12 @@ require([
             }
 
             centerMap(view, Point, lat, long, isComma); //center map
+            //END OF FIX
 
-            console.log("Search started.");
-            console.log("results", event)
-            console.log("result", event.target.searchTerm)
-            searchTermGiphy = event.target.searchTerm
+            // console.log("Search started.");
+            // console.log("results", event)
 
+            database.ref("/events").remove();
 
             //CLEARS POINTS ON NEW SEARCH
             view.graphics.removeAll();
@@ -156,62 +110,8 @@ require([
 
             meetupAPI();
         });
-
-
-        // view.on("click", function (event) {
-        //     event.stopPropagation();
-
-        //     // Get the coordinates of the click on the view
-        //     // around the decimals to 3 decimals
-        //     var lat = Math.round(event.mapPoint.latitude * 1000) / 1000;
-        //     var lon = Math.round(event.mapPoint.longitude * 1000) / 1000;
-        //     console.log("This is the Jacob Branch");
-
-        //     database.ref().update({
-        //         lat: lat,
-        //         lon: lon
-        //     })
-
-
-        //     meetupAPI();
-        //     // setTimeout(function () {
-        //     //     database.ref().once("value").then(function (snap) {
-        //     //         var eventName;
-        //     //         eventName = snap.val().eventName
-        //     //         view.popup.open({
-        //     //             // Set the popup's title to the coordinates of the clicked location
-        //     //             title: eventName,
-        //     //             content: lat + " " + lon,
-        //     //             location: { latitude: snap.val().eventLat, longitude: snap.val().eventLon } // Set the location of the popup to the clicked location
-        //     //         });
-        //     //     })
-        //     // }, 1000)
-
-        //     console.log("map", event.mapPoint);
-
-
-
-        //     // Execute a reverse geocode using the clicked location
-        //     locatorTask.locationToAddress(event.mapPoint).then(function (response) {
-        //         console.log("response", response)
-        //         console.log("City", response.attributes.City)
-        //         console.log("PLace Name", response.attributes.PlaceName)
-        //         database.ref().update({
-        //             searchTermGiphy: response.attributes.City
-        //         })
-        //         createGif();
-        //         // If an address is successfully found, show it in the popup's content
-        //         view.popup.content = response.address;
-        //         console.log(view.popup.content)
-        //     }).catch(function (err) {
-        //         // If the promise fails and no result is found, show a generic message
-        //         view.popup.content = "No address was found for this location";
-        //     });
-
-        //     centerMap(view, Point, lat, lon, true);
-        // });
-
-        database.ref("/events").on("child_added", function (snap) {
+        //WHEN SEARCH IS DONE IT WILL TAKE INFO FROM DATABASE AND ADD POINTS WHERE THE EVENTS ARE
+        database.ref("/events").on("child_added", function(snap) {
             console.log(snap.val());
             var point = {
                 type: "point", // autocasts as new Point()
@@ -234,28 +134,21 @@ require([
                 geometry: point,
                 symbol: markerSymbol,
                 popupTemplate: { // autocasts as new PopupTemplate()
-                    title: snap.val().eventName,
-                    content: [{
-                        type: "fields",
-                        fieldInfos: [{
-                            fieldName: "something",
-                        }, {
-                            fieldName: "something",
-                        }, {
-                            fieldName: "Length"
-                        }]
-                    }]
-                }
+                    title: "<a target='_blank' href='" + snap.val().eventLink + "'>" + snap.val().eventName + "</a>",
+                    content: "<p>Group: " + snap.val().eventGroupName + "</p><p>Time: " + parseTime(snap.val().eventTime) + " Date: " + snap.val().eventDate + "</p>"
+                    + "<p> RSVP Count: " + snap.val().eventRsvpCount + "  Waitlist: " + snap.val().eventWaitlist + "</p>"
+                  }
             });
             view.graphics.add(pointGraphic);
         })
+        //END OF ADDING POINTS
     }
 
 
 
 
 );
-
+//BUTTONS SO CHANGE BASE LAYER OF MAP
 $('#grey-vector').on('click', function () {
     view.map = mapTwo;
 })
@@ -266,7 +159,7 @@ $('#hybrid').on('click', function () {
     view.map = mapOne;
 })
 
-
+//ZOOMS IN AND CENTERS MAP ON SEARCH
 function centerMap(view, Point, lat, lon, zoom) {
     var pt = new Point({
         latitude: lat,
@@ -286,8 +179,9 @@ function centerMap(view, Point, lat, lon, zoom) {
     });
 }
 
-console.log('hello')
-// Initialize Firebase
+// ==================================================================================================
+// ============================= Initialize Firebase ================================================
+// ==================================================================================================
 var config = {
     apiKey: "AIzaSyCHcwv7DP-PmycL-kcR7RVl4RrIWI6M358",
     authDomain: "photoaggregator-b3ee4.firebaseapp.com",
@@ -323,38 +217,21 @@ var meetupAPI = function () {
             method: 'get',
             url: url,
             success: function (result) {
-                // console.log('back with ' + result.data.length +' results');
                 console.log(result);
                 for (i = 0; i < result.data.events.length; i++) {
-                    // console.log("venue", result.data.events.venue.name == undefined)
-                    if (result.data.events.venue) {
-                        database.ref("/events").push({
-                            eventName: result.data.events[i].name,
-                            eventLat: result.data.events[i].venue.lat,
-                            eventLon: result.data.events[i].venue.lon,
-                            eventDescription: result.data.evens[i].description,
-                            eventAddress: result.data.event[i].venue.address_1,
-                            eventTime: result.data.events[i].local_time,
-                            eventDate: result.data.events[i].local_date,
-                            eventRsvpCount: result.data.events[i].yes_rsvp_count,
-                            eventWaitlist: result.data.events[i].waitlist_count
-
-
-                        })
-
-                    } else {
                         database.ref("/events").push({
                             eventName: result.data.events[i].name,
                             eventLat: result.data.events[i].group.lat,
                             eventLon: result.data.events[i].group.lon,
-                            eventDescription: result.data.events[i].description,
+                            // eventDescription: result.data.events[i].description,
                             // eventAddress: result.data.events[i].venue.address_1,
                             eventTime: result.data.events[i].local_time,
                             eventDate: result.data.events[i].local_date,
                             eventRsvpCount: result.data.events[i].yes_rsvp_count,
-                            eventWaitlist: result.data.events[i].waitlist_count
+                            eventWaitlist: result.data.events[i].waitlist_count,
+                            eventGroupName: result.data.events[i].group.name,
+                            eventLink: result.data.events[i].link
                         })
-                    }
 
                 }
 
@@ -363,4 +240,32 @@ var meetupAPI = function () {
 
     })
 
+}
+
+var parseTime = function(timeInput) {
+    var time = timeInput; // your input
+    
+    time = time.split(':'); // convert to array
+    
+    // fetch
+    var hours = Number(time[0]);
+    var minutes = Number(time[1]);
+    // var seconds = Number(time[2]);
+    
+    // calculate
+    var timeValue;
+    
+    if (hours > 0 && hours <= 12) {
+      timeValue= "" + hours;
+    } else if (hours > 12) {
+      timeValue= "" + (hours - 12);
+    } else if (hours == 0) {
+      timeValue= "12";
+    }
+     
+    timeValue += (minutes < 10) ? ":0" + minutes : ":" + minutes;  // get minutes
+    // timeValue += (seconds < 10) ? ":0" + seconds : ":" + seconds;  // get seconds
+    timeValue += (hours >= 12) ? " P.M." : " A.M.";  // get AM/PM
+
+    return timeValue;
 }
