@@ -3,7 +3,10 @@
 // ==================================================================================================
 // ============================ Map API =============================================================
 // ==================================================================================================
-
+var mapOne;
+var mapTwo;
+var mapThree;
+var view;
 require([
     "esri/tasks/Locator",
     // loads code specific to creating a map
@@ -23,6 +26,20 @@ require([
     Search,
     Point) {
 
+        //definition for: hybri. Try one of these: "streets", "satellite",
+        //"hybrid", "terrain", "topo", "gray", "dark-gray", "oceans", "national-geographic",
+        //"osm", "dark-gray-vector", "gray-vector", "streets-vector", "topo-vector",
+        //"streets-night-vector", "streets-relief-vector", "streets-navigation-vector"
+        mapOne = new Map({
+            basemap: "hybrid",
+        });
+        mapTwo = new Map({
+            basemap: 'gray-vector',
+        })
+        mapThree = new Map({
+            basemap: 'streets',
+        })
+
         var locatorTask = new Locator({
             url: "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer"
         })
@@ -32,12 +49,12 @@ require([
             ground: "world-elevation"
 
         });
-        
-        var view = new MapView({
+
+         view = new MapView({
             scale: 20000000,
             center: [-99.53613281247335, 36.77409249463308],
             container: "viewDiv",
-            map: maplocation
+            map: mapOne
         });
 
         var point = {
@@ -165,14 +182,14 @@ require([
             centerMap(view, Point, lat, lon, true);
         });
 
-        database.ref("/events").on("child_added", function(snap) {
+        database.ref("/events").on("child_added", function (snap) {
             console.log(snap.val());
             var point = {
                 type: "point", // autocasts as new Point()
                 longitude: snap.val().eventLon,
                 latitude: snap.val().eventLat
             };
-    
+
             // Create a symbol for drawing the point
             var markerSymbol = {
                 type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
@@ -182,7 +199,7 @@ require([
                     width: 2
                 }
             };
-    
+
             // Create a graphic and add the geometry and symbol to it
             var pointGraphic = new Graphic({
                 geometry: point,
@@ -195,6 +212,17 @@ require([
 
 
 );
+
+$('#grey-vector').on('click', function () {
+    view.map = mapTwo;
+})
+$('#streets').on('click', function () {
+    view.map = mapThree;
+})
+$('#hybrid').on('click', function () {
+    view.map = mapOne;
+})
+
 
 function centerMap(view, Point, lat, lon, zoom) {
     var pt = new Point({
