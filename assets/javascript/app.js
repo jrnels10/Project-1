@@ -100,6 +100,8 @@ require([
         });
         console.log(pointGraphic)
         view.graphics.addMany([pointGraphic]);
+
+        
         // to search by name on map
         var searchWidget = new Search({
             view: view
@@ -236,9 +238,9 @@ require([
                     content: [{
                       type: "fields",
                       fieldInfos: [{
-                        fieldName: "Name"
+                        fieldName:"something",
                       }, {
-                        fieldName: "Owner"
+                        fieldName: "something",
                       }, {
                         fieldName: "Length"
                       }]
@@ -327,14 +329,27 @@ var meetupAPI = function () {
                             eventName: result.data.events[i].name,
                             eventLat: result.data.events[i].venue.lat,
                             eventLon: result.data.events[i].venue.lon,
-                            eventDescription: result.data.evens[i].description
+                            eventDescription: result.data.evens[i].description,
+                            eventAddress: result.data.event[i].venue.address_1,
+                            eventTime: result.data.events[i].local_time,
+                            eventDate: result.data.events[i].local_date,
+                            eventRsvpCount: result.data.events[i].yes_rsvp_count,
+                            eventWaitlist: result.data.events[i].waitlist_count
+
+
                         })
 
                     } else {
                         database.ref("/events").push({
                             eventName: result.data.events[i].name,
                             eventLat: result.data.events[i].group.lat,
-                            eventLon: result.data.events[i].group.lon
+                            eventLon: result.data.events[i].group.lon,
+                            eventDescription: result.data.events[i].description,
+                            // eventAddress: result.data.events[i].venue.address_1,
+                            eventTime: result.data.events[i].local_time,
+                            eventDate: result.data.events[i].local_date,
+                            eventRsvpCount: result.data.events[i].yes_rsvp_count,
+                            eventWaitlist: result.data.events[i].waitlist_count
                         })
                     }
 
