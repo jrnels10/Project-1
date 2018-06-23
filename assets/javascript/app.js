@@ -160,6 +160,9 @@ require([
             var lon = Math.round(event.mapPoint.longitude * 1000) / 1000;
             console.log("This is the Jacob Branch");
 
+            //CLEARS POINTS ON NEW SEARCH
+            view.graphics.removeAll();
+
             database.ref().update({
                 lat: lat,
                 lon: lon
@@ -167,18 +170,6 @@ require([
 
 
             meetupAPI();
-            // setTimeout(function () {
-            //     database.ref().once("value").then(function (snap) {
-            //         var eventName;
-            //         eventName = snap.val().eventName
-            //         view.popup.open({
-            //             // Set the popup's title to the coordinates of the clicked location
-            //             title: eventName,
-            //             content: lat + " " + lon,
-            //             location: { latitude: snap.val().eventLat, longitude: snap.val().eventLon } // Set the location of the popup to the clicked location
-            //         });
-            //     })
-            // }, 1000)
 
             console.log("map", event.mapPoint);
 
@@ -225,11 +216,25 @@ require([
             // Create a graphic and add the geometry and symbol to it
             var pointGraphic = new Graphic({
                 geometry: point,
-                symbol: markerSymbol
+                symbol: markerSymbol,
+                popupTemplate: { // autocasts as new PopupTemplate()
+                    title: "{Name}",
+                    content: [{
+                      type: "fields",
+                      fieldInfos: [{
+                        fieldName: "Name"
+                      }, {
+                        fieldName: "Owner"
+                      }, {
+                        fieldName: "Length"
+                      }]
+                    }]
+                  }
             });
-            view.graphics.addMany([pointGraphic]);
+            view.graphics.add(pointGraphic);
         })
     }
+
 
 
 
