@@ -209,7 +209,7 @@ require([
         //     centerMap(view, Point, lat, lon, true);
         // });
 
-        database.ref("/events").on("child_added", function(snap) {
+        database.ref("/events").on("child_added", function (snap) {
             console.log(snap.val());
             var point = {
                 type: "point", // autocasts as new Point()
@@ -234,19 +234,20 @@ require([
                 popupTemplate: { // autocasts as new PopupTemplate()
                     title: snap.val().eventName,
                     content: [{
-                      type: "fields",
-                      fieldInfos: [{
-                        fieldName: "Name"
-                      }, {
-                        fieldName: "Owner"
-                      }, {
-                        fieldName: "Length"
-                      }]
+                        type: "fields",
+                        fieldInfos: [{
+                            fieldName: snap.val().eventName
+                        }, {
+                            fieldname: {
+                                places: snap.val().eventLat,
+                            },
+                            // fieldName: "Length"
+                        }]
                     }]
-                  }
+                }
             });
             view.graphics.add(pointGraphic);
-        })
+        });
     }
 
 
