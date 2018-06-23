@@ -105,65 +105,68 @@ require([
             console.log("result", event.target.searchTerm)
             searchTermGiphy = event.target.searchTerm
 
-            database.ref().update({
-                searchTermGiphy: event.target.searchTerm
-            })
-            meetupAPI();
-        });
-
-
-        view.on("click", function (event) {
-            event.stopPropagation();
-
-            // Get the coordinates of the click on the view
-            // around the decimals to 3 decimals
-            var lat = Math.round(event.mapPoint.latitude * 1000) / 1000;
-            var lon = Math.round(event.mapPoint.longitude * 1000) / 1000;
-            console.log("This is the Jacob Branch");
 
             database.ref().update({
                 lat: lat,
-                lon: lon
+                lon: long
             })
 
-
             meetupAPI();
-            // setTimeout(function () {
-            //     database.ref().once("value").then(function (snap) {
-            //         var eventName;
-            //         eventName = snap.val().eventName
-            //         view.popup.open({
-            //             // Set the popup's title to the coordinates of the clicked location
-            //             title: eventName,
-            //             content: lat + " " + lon,
-            //             location: { latitude: snap.val().eventLat, longitude: snap.val().eventLon } // Set the location of the popup to the clicked location
-            //         });
-            //     })
-            // }, 1000)
-
-            console.log("map", event.mapPoint);
-
-
-
-            // Execute a reverse geocode using the clicked location
-            locatorTask.locationToAddress(event.mapPoint).then(function (response) {
-                console.log("response", response)
-                console.log("City", response.attributes.City)
-                console.log("PLace Name", response.attributes.PlaceName)
-                database.ref().update({
-                    searchTermGiphy: response.attributes.City
-                })
-                createGif();
-                // If an address is successfully found, show it in the popup's content
-                view.popup.content = response.address;
-                console.log(view.popup.content)
-            }).catch(function (err) {
-                // If the promise fails and no result is found, show a generic message
-                view.popup.content = "No address was found for this location";
-            });
-
-            centerMap(view, Point, lat, lon, true);
         });
+
+
+        // view.on("click", function (event) {
+        //     event.stopPropagation();
+
+        //     // Get the coordinates of the click on the view
+        //     // around the decimals to 3 decimals
+        //     var lat = Math.round(event.mapPoint.latitude * 1000) / 1000;
+        //     var lon = Math.round(event.mapPoint.longitude * 1000) / 1000;
+        //     console.log("This is the Jacob Branch");
+
+        //     database.ref().update({
+        //         lat: lat,
+        //         lon: lon
+        //     })
+
+
+        //     meetupAPI();
+        //     // setTimeout(function () {
+        //     //     database.ref().once("value").then(function (snap) {
+        //     //         var eventName;
+        //     //         eventName = snap.val().eventName
+        //     //         view.popup.open({
+        //     //             // Set the popup's title to the coordinates of the clicked location
+        //     //             title: eventName,
+        //     //             content: lat + " " + lon,
+        //     //             location: { latitude: snap.val().eventLat, longitude: snap.val().eventLon } // Set the location of the popup to the clicked location
+        //     //         });
+        //     //     })
+        //     // }, 1000)
+
+        //     console.log("map", event.mapPoint);
+
+
+
+        //     // Execute a reverse geocode using the clicked location
+        //     locatorTask.locationToAddress(event.mapPoint).then(function (response) {
+        //         console.log("response", response)
+        //         console.log("City", response.attributes.City)
+        //         console.log("PLace Name", response.attributes.PlaceName)
+        //         database.ref().update({
+        //             searchTermGiphy: response.attributes.City
+        //         })
+        //         createGif();
+        //         // If an address is successfully found, show it in the popup's content
+        //         view.popup.content = response.address;
+        //         console.log(view.popup.content)
+        //     }).catch(function (err) {
+        //         // If the promise fails and no result is found, show a generic message
+        //         view.popup.content = "No address was found for this location";
+        //     });
+
+        //     centerMap(view, Point, lat, lon, true);
+        // });
 
         database.ref("/events").on("child_added", function(snap) {
             console.log(snap.val());
@@ -233,83 +236,6 @@ database.ref().update({
     something: "something"
 })
 
-// ==================================================================================================
-// ============================ Create Gifs ==========================================================
-// ==================================================================================================
-
-// database.ref("/searchTermGiphy").on("value", function (snap) {
-//     var searchTermGiphy = snap.val()
-//     console.log("searchTermGiphy", searchTermGiphy);
-//     var emptyArray = [];
-//     var searchTermGiphy;
-//     var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + searchTermGiphy + "&api_key=4yRpEILyq50dh9npI0IKoifeIPUZKgdT&rating=pg&limit=10";
-//     // var queryURL = "https://pixabay.com/api/?key=9333797-288852953f23c75ab55a617e3&q=" + searchTermGiphy + "=photo";
-
-//     var createGif = function () {
-
-//         $("#gif-div").empty();
-//         //call on API to get info
-//         console.log("queryURL", queryURL)
-
-//         //ajax call to api to obtain info to put on site
-//         $.ajax({
-//             url: queryURL,
-//             method: 'GET'
-
-//         }).then(function (response) {
-
-//             for (i = 0; i < 10; i++) {
-
-//                 var results = response.data;
-//                 var imgURL = results[i].images.downsized.url;
-//                 console.log(results);
-//                 // var picDiv = $('<div>').addClass("pic-div float");
-//                 // var image = $('<img>').attr('src', imgURL);
-//                 // picDiv.append(image);
-//                 // $("#gif-div").append(picDiv);
-
-//                 var cardCol = $("<div>").addClass("col s12 m4");
-//                 $("#gif-div").append(cardCol);
-
-//                 var card = $("<div>").addClass("card small");
-//                 $(cardCol).append(card);
-
-//                 cardImage = $("<div>");
-//                 $(cardImage).addClass("card-image");
-//                 $(card).append(cardImage);
-
-//                 var img = $("<img>").attr("src", imgURL);
-//                 $(cardImage).append(img);
-
-//                 var cardContent = $("<div>");
-//                 $(cardContent).addClass("card-content");
-//                 $(card).append(cardContent);
-
-//                 var cardTitle = $("<span>");
-//                 $(cardTitle).addClass("card-title");
-//                 $(cardTitle).text("Placeholder");
-//                 $(cardContent).append(cardTitle);
-
-//                 // var cardp = $("<p>");
-//                 // $(cardp).text("Rating: " + gifRating);
-//                 // $(cardContent).append(cardTitle);
-
-//                 var cardAction = $("<div>");
-//                 $(cardAction).addClass("card-action");
-//                 $(card).append(cardAction);
-
-//                 var a = $("<a>");
-//                 $(a).attr("href", "#");
-//                 $(a).text("Download");
-//                 $(cardAction).append(a);
-//                 console.log("ran")
-
-//             }
-//         });
-//     }
-//     createGif();
-// })
-
 
 // ==================================================================================================
 // ============================ Meetup API ==========================================================
@@ -319,7 +245,7 @@ database.ref().update({
 var meetupAPI = function () {
 
     database.ref().once("value").then(function (snap) {
-        var url = "https://api.meetup.com/find/upcoming_events?&key=413e32034783f3038f567864804610&lat=" + snap.val().lat + "&lon=" + snap.val().lon + "&sign=true&photo-host=public&page=20";
+        var url = "https://api.meetup.com/find/upcoming_events?&key=413e32034783f3038f567864804610&lat=" + snap.val().lat + "&lon=" + snap.val().lon + "&sign=true&photo-host=public&page=50";
         $.ajax({
 
             dataType: 'jsonp',
@@ -329,11 +255,21 @@ var meetupAPI = function () {
                 // console.log('back with ' + result.data.length +' results');
                 console.log(result);
                 for (i = 0; i < result.data.events.length; i++) {
-                    database.ref("/events").push({
-                        eventName: result.data.events[i].name,
-                        eventLat: result.data.events[i].venue.lat,
-                        eventLon: result.data.events[i].venue.lon
-                    })
+                    // console.log("venue", result.data.events.venue.name == undefined)
+                    if (result.data.events.venue) {
+                        database.ref("/events").push({
+                            eventName: result.data.events[i].name,
+                            eventLat: result.data.events[i].venue.lat,
+                            eventLon: result.data.events[i].venue.lon
+                        })
+
+                    } else {
+                        database.ref("/events").push({
+                            eventName: result.data.events[i].name,
+                            eventLat: result.data.events[i].group.lat,
+                            eventLon: result.data.events[i].group.lon
+                        })
+                    }
 
                 }
 
