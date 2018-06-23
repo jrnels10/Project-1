@@ -46,7 +46,6 @@ require([
 
         var maplocation = new Map({
             basemap: "streets",
-            ground: "world-elevation"
 
         });
 
