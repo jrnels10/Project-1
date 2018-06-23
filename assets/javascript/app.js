@@ -100,6 +100,8 @@ require([
         });
         console.log(pointGraphic)
         view.graphics.addMany([pointGraphic]);
+
+
         // to search by name on map
         var searchWidget = new Search({
             view: view
@@ -236,18 +238,17 @@ require([
                     content: [{
                         type: "fields",
                         fieldInfos: [{
-                            fieldName: snap.val().eventName
+                            fieldName: "something",
                         }, {
-                            fieldname: {
-                                places: snap.val().eventLat,
-                            },
-                            // fieldName: "Length"
+                            fieldName: "something",
+                        }, {
+                            fieldName: "Length"
                         }]
                     }]
                 }
             });
             view.graphics.add(pointGraphic);
-        });
+        })
     }
 
 
@@ -307,12 +308,15 @@ database.ref().update({
 // ==================================================================================================
 // ============================ Meetup API ==========================================================
 // ==================================================================================================
-
-
+// &text=" + userMeetupText + "
+var userMeetupText;
+$('#add-user-search').on('click', function () {
+    userMeetupText = $('#user-search').val();
+})
 var meetupAPI = function () {
-
     database.ref().once("value").then(function (snap) {
-        var url = "https://api.meetup.com/find/upcoming_events?&key=413e32034783f3038f567864804610&lat=" + snap.val().lat + "&lon=" + snap.val().lon + "&sign=true&photo-host=public&page=50";
+        console.log('user search: ' + userMeetupText);
+        var url = "https://api.meetup.com/find/upcoming_events?&key=413e32034783f3038f567864804610&lat=" + snap.val().lat + "&lon=" + snap.val().lon + "&sign=true&photo-host=public&text=" + userMeetupText + "&page=50";
         $.ajax({
 
             dataType: 'jsonp',
@@ -328,14 +332,27 @@ var meetupAPI = function () {
                             eventName: result.data.events[i].name,
                             eventLat: result.data.events[i].venue.lat,
                             eventLon: result.data.events[i].venue.lon,
-                            eventDescription: result.data.evens[i].description
+                            eventDescription: result.data.evens[i].description,
+                            eventAddress: result.data.event[i].venue.address_1,
+                            eventTime: result.data.events[i].local_time,
+                            eventDate: result.data.events[i].local_date,
+                            eventRsvpCount: result.data.events[i].yes_rsvp_count,
+                            eventWaitlist: result.data.events[i].waitlist_count
+
+
                         })
 
                     } else {
                         database.ref("/events").push({
                             eventName: result.data.events[i].name,
                             eventLat: result.data.events[i].group.lat,
-                            eventLon: result.data.events[i].group.lon
+                            eventLon: result.data.events[i].group.lon,
+                            eventDescription: result.data.events[i].description,
+                            // eventAddress: result.data.events[i].venue.address_1,
+                            eventTime: result.data.events[i].local_time,
+                            eventDate: result.data.events[i].local_date,
+                            eventRsvpCount: result.data.events[i].yes_rsvp_count,
+                            eventWaitlist: result.data.events[i].waitlist_count
                         })
                     }
 
