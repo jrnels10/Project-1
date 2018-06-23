@@ -20,6 +20,7 @@
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Firebase App is always re must be first -->
+    
 
     <!-- Add additional services you want to use -->
     <!-- <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-auth.js"></script> -->
@@ -29,6 +30,7 @@
     <!-- <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-functions.js"></script> -->
 
 </head>
+
 <body>
     <!-- NAV TO WORK WITH LATER -->
     <nav>
@@ -52,7 +54,12 @@
         </div>
     </nav>
 
-            <div id="viewDiv"></div>
+    <label for="user-input">Search for event</label>
+    <input type="text" id="user-search">
+    <!-- Button triggers new state to be added -->
+    <input class="btn btn-success m-2" id="add-user-search" type="submit" value="Add User Search">
+    <div id="viewDiv"></div>
+
 
 
 
