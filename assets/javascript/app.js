@@ -55,7 +55,7 @@ require([
         });
         //REMOVE EVENTS FROM DATABASE SO THE POINTS DONT SHOW UP FROM PREVIOUS SEARCHES
         database.ref("/events").remove();
-        
+
         // to search by name on map
         var searchWidget = new Search({
             view: view
@@ -110,11 +110,11 @@ require([
 
             meetupAPI();
         });
-        database.ref('user-search').on('value',function(snap){
+        database.ref('user-search').on('value', function (snap) {
             view.graphics.removeAll();
         })
         //WHEN SEARCH IS DONE IT WILL TAKE INFO FROM DATABASE AND ADD POINTS WHERE THE EVENTS ARE
-        database.ref("/events").on("child_added", function(snap) {
+        database.ref("/events").on("child_added", function (snap) {
             console.log(snap.val());
             var point = {
                 type: "point", // autocasts as new Point()
@@ -139,8 +139,8 @@ require([
                 popupTemplate: { // autocasts as new PopupTemplate()
                     title: "<a target='_blank' href='" + snap.val().eventLink + "'>" + snap.val().eventName + "</a>",
                     content: "<p>Group: " + snap.val().eventGroupName + "</p><p>Time: " + snap.val().eventTime + " Date: " + snap.val().eventDate + "</p>"
-                    + "<p> RSVP Count: " + snap.val().eventRsvpCount + "  Waitlist: " + snap.val().eventWaitlist + "</p>"
-                  }
+                        + "<p> RSVP Count: " + snap.val().eventRsvpCount + "  Waitlist: " + snap.val().eventWaitlist + "</p>"
+                }
             });
             // pointGraphic.className('hello');
             view.graphics.add(pointGraphic);
@@ -211,18 +211,47 @@ database.ref().update({
 // ==================================================================================================
 // ============================ Meetup API ==========================================================
 // ==================================================================================================
+
+$('.dropdown-trigger').dropdown();
 // &text=" + userMeetupText + "
-var userMeetupText;
+var userMeetupText = 'all';
+var today = new Date();
+var dd = today.getDate();
+
+var mm = today.getMonth()+1; 
+var yyyy = today.getFullYear();
+if(dd<10) 
+{
+    dd='0'+dd;
+} 
+
+if(mm<10) 
+{
+    mm='0'+mm;
+} 
+today = yyyy+'-'+mm+'-'+dd;
+var endDate = (yyyy + 1)+'-'+mm+'-'+dd;;
+console.log(endDate)
+var userMeetupDateStart = today;
+// console.log(today)
+var userMeetupDateEnd = endDate;
+console.log(userMeetupDateStart)
+console.log(userMeetupDateEnd)
+
 $('#add-user-search').on('click', function () {
     database.ref("/events").remove();
     database.ref('user-search').set(true);
     userMeetupText = $('#user-search').val();
+    userMeetupDateStart = $('#start-date').val();
+    userMeetupDateEnd = $('#end-date').val();
     meetupAPI();
+    console.log('start date: ' + userMeetupDateStart);
+    console.log('end date: ' + userMeetupDateEnd);
 })
 var meetupAPI = function () {
     database.ref().once("value").then(function (snap) {
         console.log('user search: ' + userMeetupText);
-        var url = "https://api.meetup.com/find/upcoming_events?&key=413e32034783f3038f567864804610&lat=" + snap.val().lat + "&lon=" + snap.val().lon + "&sign=true&photo-host=public&text=" + userMeetupText + "&Radius=100&page=50";
+        var url = "https://api.meetup.com/find/upcoming_events?&key=413e32034783f3038f567864804610&lat=" + snap.val().lat + "&lon=" + snap.val().lon + "&sign=true&photo-host=public&self_groups=include&end_date_range=" + userMeetupDateEnd + "T01%3A01%3A01&start_date_range=" + userMeetupDateStart + "T01%3A01%3A01&text=" + userMeetupText + "&Radius=100&page=50";
         $.ajax({
 
             dataType: 'jsonp',
@@ -232,19 +261,19 @@ var meetupAPI = function () {
                 console.log(result);
                 for (i = 0; i < result.data.events.length; i++) {
                     console.log("ran")
-                        database.ref("/events").push({
-                            eventName: result.data.events[i].name,
-                            eventLat: result.data.events[i].group.lat,
-                            eventLon: result.data.events[i].group.lon,
-                            // eventDescription: result.data.events[i].description,
-                            // eventAddress: result.data.events[i].venue.address_1,
-                            eventTime: convertTime(result.data.events[i].time),
-                            eventDate: convertDate(result.data.events[i].time),
-                            eventRsvpCount: result.data.events[i].yes_rsvp_count,
-                            eventWaitlist: result.data.events[i].waitlist_count,
-                            eventGroupName: result.data.events[i].group.name,
-                            eventLink: result.data.events[i].link
-                        })
+                    database.ref("/events").push({
+                        eventName: result.data.events[i].name,
+                        eventLat: result.data.events[i].group.lat,
+                        eventLon: result.data.events[i].group.lon,
+                        // eventDescription: result.data.events[i].description,
+                        // eventAddress: result.data.events[i].venue.address_1,
+                        eventTime: convertTime(result.data.events[i].time),
+                        eventDate: convertDate(result.data.events[i].time),
+                        eventRsvpCount: result.data.events[i].yes_rsvp_count,
+                        eventWaitlist: result.data.events[i].waitlist_count,
+                        eventGroupName: result.data.events[i].group.name,
+                        eventLink: result.data.events[i].link
+                    })
 
                 }
 
@@ -255,27 +284,27 @@ var meetupAPI = function () {
 
 }
 
-var parseTime = function(timeInput) {
+var parseTime = function (timeInput) {
     var time = timeInput; // your input
-    
+
     time = time.split(':'); // convert to array
-    
+
     // fetch
     var hours = Number(time[0]);
     var minutes = Number(time[1]);
     // var seconds = Number(time[2]);
-    
+
     // calculate
     var timeValue;
-    
+
     if (hours > 0 && hours <= 12) {
-      timeValue= "" + hours;
+        timeValue = "" + hours;
     } else if (hours > 12) {
-      timeValue= "" + (hours - 12);
+        timeValue = "" + (hours - 12);
     } else if (hours == 0) {
-      timeValue= "12";
+        timeValue = "12";
     }
-     
+
     timeValue += (minutes < 10) ? ":0" + minutes : ":" + minutes;  // get minutes
     // timeValue += (seconds < 10) ? ":0" + seconds : ":" + seconds;  // get seconds
     timeValue += (hours >= 12) ? " P.M." : " A.M.";  // get AM/PM
@@ -285,25 +314,31 @@ var parseTime = function(timeInput) {
 
 
 
-function convertTime(UNIX_timestamp){
-  var a = new Date(UNIX_timestamp);
-  var hour = a.getHours();
-  var min = a.getMinutes();
-  var sec = a.getSeconds();
-  var time = hour + ':' + min + ':' + sec ;
-  return parseTime(time);
+function convertTime(UNIX_timestamp) {
+    var a = new Date(UNIX_timestamp);
+    var hour = a.getHours();
+    var min = a.getMinutes();
+    var sec = a.getSeconds();
+    var time = hour + ':' + min + ':' + sec;
+    return parseTime(time);
 }
 
 console.log(parseTime(convertTime(1531357200000)));
 
-function convertDate(UNIX_timestamp){
+function convertDate(UNIX_timestamp) {
     var a = new Date(UNIX_timestamp);
-    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     var year = a.getFullYear();
     var month = months[a.getMonth()];
     var date = a.getDate();
     var time = date + ' ' + month + ' ' + year;
     return time;
-  }
+}
 
-  console.log(convertDate(1531357200000));
+console.log(convertDate(1531357200000));
+
+
+
+
+
+
