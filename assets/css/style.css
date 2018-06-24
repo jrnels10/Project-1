@@ -39,6 +39,35 @@ nav {
     /* background: #f85787 */
 }
 
+#dropdown2 {
+    width: 200px;
+}
+
+h7 {
+    text-align: center;
+    width: 100%;
+    color: purple;
+}
+#search-label {
+    line-height: 0px;
+}
+.add-user-search {
+    width: 80%;
+    align-content: center;
+    margin-left: 15px;
+}
+#user-search {
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-bottom:0px;
+    padding: 5px;
+    height: 20px;
+    width: 120px;;
+    text-align: center;
+}
+.dates {
+    text-align: center;
+}
 /* #results {
     content: '';
     width: 200px;

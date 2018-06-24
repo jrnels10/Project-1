@@ -125,12 +125,13 @@ require([
             // Create a symbol for drawing the point
             var markerSymbol = {
                 type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
-                color: [226, 119, 40],
+                color: [170, 66, 244],
                 outline: { // autocasts as new SimpleLineSymbol()
                     color: [255, 255, 255],
                     width: 2
                 }
             };
+            // markerSymbol.addClass('test');
 
             // Create a graphic and add the geometry and symbol to it
             var pointGraphic = new Graphic({
@@ -212,33 +213,29 @@ database.ref().update({
 // ============================ Meetup API ==========================================================
 // ==================================================================================================
 
-$(document).ready(function () {
-    $('.first-drop').dropdown({
-        inDuration: 500,
-        outDuration: 500,
-        closeOnClick: false,
-        coverTrigger: false, // Displays dropdown below the button
 
-    });
-    $('.second-drop').dropdown({
-        inDuration: 500,
-        outDuration: 500,
-        closeOnClick: false,
-        // constrain_width: false, // Does not change width of dropdown to that of the activator
-        // hover: true, // Activate on hover
-        // gutter: ($('.dropdown-content').width()*3)/2.5 + 2, // Spacing from edge
-        coverTrigger: false, // Displays dropdown below the button
-    });
-    $('.third-drop').dropdown({
-        inDuration: 500,
-        outDuration: 500,
-        closeOnClick: false,
-        // constrain_width: false, // Does not change width of dropdown to that of the activator
-        // hover: true, // Activate on hover
-        // gutter: ($('.dropdown-content').width()*3)/2.5 + 2, // Spacing from edge
-        coverTrigger: false, // Displays dropdown below the button
-    });
+$('.first-drop').dropdown({
+    inDuration: 500,
+    outDuration: 500,
+    closeOnClick: true,
+    coverTrigger: false,
 });
+$('.second-drop').dropdown({
+    inDuration: 500,
+    outDuration: 500,
+    closeOnClick: false,
+    coverTrigger: false, // Displays dropdown below the button
+});
+$('.third-drop').dropdown({
+    inDuration: 500,
+    outDuration: 500,
+    closeOnClick: false,
+    // constrain_width: false, // Does not change width of dropdown to that of the activator
+    // hover: true, // Activate on hover
+    // gutter: ($('.dropdown-content').width()*3)/2.5 + 2, // Spacing from edge
+    coverTrigger: false, // Displays dropdown below the button
+});
+
 // &text=" + userMeetupText + "
 var userMeetupText = 'all';
 var today = new Date();
