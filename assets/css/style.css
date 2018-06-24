@@ -21,7 +21,7 @@ nav {
 
 .btn {
     font-size: 12.5px;
-    margin: 0;
+    margin: 10px;
 }
 
 #btn-space li {
@@ -38,6 +38,7 @@ nav {
     margin-top: 50px;
     /* background: #f85787 */
 }
+
 
 /* #results {
     content: '';

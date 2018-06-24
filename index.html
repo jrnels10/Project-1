@@ -20,7 +20,7 @@
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Firebase App is always re must be first -->
-    
+
 
     <!-- Add additional services you want to use -->
     <!-- <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-auth.js"></script> -->
@@ -35,13 +35,21 @@
     <!-- NAV TO WORK WITH LATER -->
     <nav>
         <div class="nav-wrapper">
-                <ul  id='btn-space' class="left hide-on-med-and-down">
-                        <li><a id="grey-vector" class="waves-effect waves-light btn purple">Grey</a></li>
-                        <li><a id="streets" class="waves-effect waves-light btn purple">Streets</a></li>
-                        <li><a id="hybrid" class="waves-effect waves-light btn purple">Hybrid</a></li>
-                      </ul>
-            </ul>
+            <!-- Dropdown Trigger -->
+            <a class='dropdown-trigger btn left' href='#' data-target='dropdown1'>Change Basemap</a>
 
+            <!-- Dropdown Structure -->
+            <ul id='dropdown1' class='dropdown-content'>
+                <li>
+                    <a id="grey-vector" class="waves-effect waves-light btn purple">Grey</a>
+                </li>
+                <li>
+                    <a id="streets" class="waves-effect waves-light btn purple">Streets</a>
+                </li>
+                <li>
+                    <a id="hybrid" class="waves-effect waves-light btn purple">Hybrid</a>
+                </li>
+            </ul>
             <a href="#" class="brand-logo center">Meetup Locator</a>
             <ul id="nav-mobile" class="right hide-on-med-and-down">
                 <li>
@@ -56,6 +64,10 @@
 
     <label for="user-input">Search for event</label>
     <input type="text" id="user-search">
+    <label for='user-date'>Search by date: YYYY-MM-DD</label>
+    <input type="text" id="start-date" data-format="YYYY-MM-DD" data-template="D MMM YYYY" name="date" value="">
+    <input type="text" id="end-date" data-format="YYYY-MM-DD" data-template="D MMM YYYY" name="date" value="">
+
     <!-- Button triggers new state to be added -->
     <input class="btn btn-success m-2" id="add-user-search" type="submit" value="Add User Search">
     <div id="viewDiv"></div>
