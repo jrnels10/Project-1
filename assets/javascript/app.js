@@ -212,36 +212,71 @@ database.ref().update({
 // ============================ Meetup API ==========================================================
 // ==================================================================================================
 
-$('.dropdown-trigger').dropdown();
+$(document).ready(function () {
+    $('.first-drop').dropdown({
+        inDuration: 500,
+        outDuration: 500,
+        closeOnClick: false,
+        coverTrigger: false, // Displays dropdown below the button
+
+    });
+    $('.second-drop').dropdown({
+        inDuration: 500,
+        outDuration: 500,
+        closeOnClick: false,
+        // constrain_width: false, // Does not change width of dropdown to that of the activator
+        // hover: true, // Activate on hover
+        // gutter: ($('.dropdown-content').width()*3)/2.5 + 2, // Spacing from edge
+        coverTrigger: false, // Displays dropdown below the button
+    });
+    $('.third-drop').dropdown({
+        inDuration: 500,
+        outDuration: 500,
+        closeOnClick: false,
+        // constrain_width: false, // Does not change width of dropdown to that of the activator
+        // hover: true, // Activate on hover
+        // gutter: ($('.dropdown-content').width()*3)/2.5 + 2, // Spacing from edge
+        coverTrigger: false, // Displays dropdown below the button
+    });
+});
 // &text=" + userMeetupText + "
 var userMeetupText = 'all';
 var today = new Date();
 var dd = today.getDate();
 
-var mm = today.getMonth()+1; 
+var mm = today.getMonth() + 1;
 var yyyy = today.getFullYear();
-if(dd<10) 
-{
-    dd='0'+dd;
-} 
+if (dd < 10) {
+    dd = '0' + dd;
+}
 
-if(mm<10) 
-{
-    mm='0'+mm;
-} 
-today = yyyy+'-'+mm+'-'+dd;
-var endDate = (yyyy + 1)+'-'+mm+'-'+dd;;
-console.log(endDate)
+if (mm < 10) {
+    mm = '0' + mm;
+}
+today = yyyy + '-' + mm + '-' + dd;
+var endDate = (yyyy + 1) + '-' + mm + '-' + dd;;
 var userMeetupDateStart = today;
 // console.log(today)
 var userMeetupDateEnd = endDate;
-console.log(userMeetupDateStart)
-console.log(userMeetupDateEnd)
+console.log('before click ' + userMeetupDateStart)
+console.log('before click ' + userMeetupDateEnd)
 
-$('#add-user-search').on('click', function () {
+$('.add-user-search').on('click', function () {
+    $('.second-drop').dropdown({
+        closeOnClick: true,
+        outDuration: 500,
+    });
     database.ref("/events").remove();
     database.ref('user-search').set(true);
     userMeetupText = $('#user-search').val();
+    console.log('search term: ' + userMeetupText)
+    meetupAPI();
+});
+$('.add-user-date').on('click', function () {
+    $('.third-drop').dropdown({
+        closeOnClick: true,
+        outDuration: 500,
+    });
     userMeetupDateStart = $('#start-date').val();
     userMeetupDateEnd = $('#end-date').val();
     meetupAPI();
@@ -253,6 +288,7 @@ var meetupAPI = function () {
         console.log('user search: ' + userMeetupText);
         var url = "https://api.meetup.com/find/upcoming_events?&key=413e32034783f3038f567864804610&lat=" + snap.val().lat + "&lon=" + snap.val().lon + "&sign=true&photo-host=public&self_groups=include&end_date_range=" + userMeetupDateEnd + "T01%3A01%3A01&start_date_range=" + userMeetupDateStart + "T01%3A01%3A01&text=" + userMeetupText + "&Radius=100&page=50";
         $.ajax({
+
 
             dataType: 'jsonp',
             method: 'get',
