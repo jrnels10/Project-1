@@ -39,9 +39,15 @@ nav {
     /* background: #f85787 */
 }
 
-#dropdown2 {
-    width: 200px;
+#dropdown2, {
+    width: 300px;
 }
+
+#left, #right {
+    margin: 0px;
+    width:30%;
+}
+#
 
 h7 {
     text-align: center;
@@ -68,6 +74,7 @@ h7 {
 .dates {
     text-align: center;
 }
+
 /* #results {
     content: '';
     width: 200px;
