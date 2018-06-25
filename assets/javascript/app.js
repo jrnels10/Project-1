@@ -118,6 +118,7 @@ require([
             console.log(snap.val());
             var point = {
                 type: "point", // autocasts as new Point()
+                className: "btn waves-effect waves-light light-blue accent-3 animated infinite rubberBand",
                 longitude: snap.val().eventLon,
                 latitude: snap.val().eventLat
             };
@@ -221,12 +222,15 @@ $('.first-drop').dropdown({
     coverTrigger: false,
 });
 $('.second-drop').dropdown({
+    // hover: true,
+    constrainWidth: false,
     inDuration: 500,
     outDuration: 500,
     closeOnClick: false,
     coverTrigger: false, // Displays dropdown below the button
 });
 $('.third-drop').dropdown({
+    // hover: true,
     inDuration: 500,
     outDuration: 500,
     closeOnClick: false,
@@ -260,7 +264,7 @@ console.log('before click ' + userMeetupDateEnd)
 
 $('.add-user-search').on('click', function () {
     $('.second-drop').dropdown({
-        closeOnClick: true,
+        closeOnClick: false,
         outDuration: 500,
     });
     database.ref("/events").remove();
@@ -268,17 +272,42 @@ $('.add-user-search').on('click', function () {
     userMeetupText = $('#user-search').val();
     console.log('search term: ' + userMeetupText)
     meetupAPI();
-});
-$('.add-user-date').on('click', function () {
-    $('.third-drop').dropdown({
-        closeOnClick: true,
-        outDuration: 500,
-    });
-    userMeetupDateStart = $('#start-date').val();
-    userMeetupDateEnd = $('#end-date').val();
-    meetupAPI();
-    console.log('start date: ' + userMeetupDateStart);
-    console.log('end date: ' + userMeetupDateEnd);
+    if (($('#start-date').val() == '') && ($('#end-date').val() == '')) {
+        console.log('start date is blank');
+        database.ref("/events").remove();
+        database.ref('user-search').set(true);    
+        userMeetupDateStart = today;
+        userMeetupDateEnd = endDate;
+        meetupAPI();
+
+    }
+    else if (($('#start-date').val()) && ($('#end-date').val() == '')) {
+        console.log('start date but no end date');
+        database.ref("/events").remove();
+        database.ref('user-search').set(true);    
+        userMeetupDateStart = $('#start-date').val();
+        userMeetupDateEnd = endDate;
+        meetupAPI();
+
+    }
+    else if (($('#start-date').val() == '') && ($('#end-date').val())) {
+        console.log('end date but no start date');
+        database.ref("/events").remove();
+        database.ref('user-search').set(true);  
+        userMeetupDateStart = today;  
+        userMeetupDateEnd = $('#end-date').val();
+        meetupAPI();
+
+    }
+    else {
+        database.ref("/events").remove();
+        database.ref('user-search').set(true);    
+        userMeetupDateStart = $('#start-date').val();
+        userMeetupDateEnd = $('#end-date').val();
+        meetupAPI();
+        console.log('start date: ' + userMeetupDateStart);
+        console.log('end date: ' + userMeetupDateEnd);
+    }
 })
 var meetupAPI = function () {
     database.ref().once("value").then(function (snap) {
