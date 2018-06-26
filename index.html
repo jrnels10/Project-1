@@ -14,13 +14,13 @@
     <!--Import Google Icon Font-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Materialize CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="assets/css/style.css">
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Firebase App is always re must be first -->
-    
+
 
     <!-- Add additional services you want to use -->
     <!-- <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-auth.js"></script> -->
@@ -33,13 +33,41 @@
 
 <body>
     <!-- NAV TO WORK WITH LATER -->
+    <!-- <div class="navbar-fixed"> -->
     <nav>
-        <div class="nav-wrapper">
-                <ul  id='btn-space' class="left hide-on-med-and-down">
-                        <li><a id="grey-vector" class="waves-effect waves-light btn purple">Grey</a></li>
-                        <li><a id="streets" class="waves-effect waves-light btn purple">Streets</a></li>
-                        <li><a id="hybrid" class="waves-effect waves-light btn purple">Hybrid</a></li>
-                      </ul>
+        <div class="nav-wrapper purple">
+            <!-- Dropdown Trigger -->
+            <a class='dropdown-trigger btn left first-drop' href='#' data-target='dropdown1'>Change Basemap</a>
+
+            <!-- Dropdown Structure -->
+            <ul id='dropdown1' class='dropdown-content'>
+                <li>
+                    <a id="grey-vector" class="waves-effect waves-light btn purple">Grey</a>
+                </li>
+                <li>
+                    <a id="streets" class="waves-effect waves-light btn purple">Streets</a>
+                </li>
+                <li>
+                    <a id="hybrid" class="waves-effect waves-light btn purple">Hybrid</a>
+                </li>
+            </ul>
+            <a class='dropdown-trigger btn left second-drop' href='#' data-target='dropdown2'>Search for event</a>
+            <ul id='dropdown2' class='dropdown-content'>
+                <div class="col s12 m6">
+                    <input type="text" id="user-search">
+                </div>
+                <div class="col s12 m6">
+                    <!-- <a class='dropdown-trigger btn left third-drop' href='#' data-target='dropdown3'>Search by date</a> -->
+                    <!-- <ul id='dropdown3' class='dropdown-content' style="height:200px"> -->
+                    <h7>Start date</h7>
+                    <input class="dates" type="text" id="start-date" data-format="YYYY-MM-DD" data-template="D MMM YYYY" name="date" value=""
+                        placeholder="YYYY-MM-DD">
+                    <h7>End date</h7>
+                    <input class="dates" type="text" id="end-date" data-format="YYYY-MM-DD" data-template="D MMM YYYY" name="date" value="" placeholder="YYYY-MM-DD">
+                    <!-- <input class="btn btn-success m-2 add-user-date" type="submit" value="Add Dates"> -->
+                    <!-- </ul> -->
+                </div>
+                <input class="btn btn-success m-2 add-user-search" type="submit" value="Search">
             </ul>
 
             <a href="#" class="brand-logo center">Meetup Locator</a>
@@ -53,11 +81,9 @@
             </ul>
         </div>
     </nav>
+    <!-- </div> -->
 
-    <label for="user-input">Search for event</label>
-    <input type="text" id="user-search">
     <!-- Button triggers new state to be added -->
-    <input class="btn btn-success m-2" id="add-user-search" type="submit" value="Add User Search">
     <div id="viewDiv"></div>
 
 
