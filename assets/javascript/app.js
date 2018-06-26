@@ -118,7 +118,7 @@ require([
             var rsvpTag;
             if ((snap.val().eventWaitlist) >= 1) {
                 console.log('rsvp is full')
-                rsvpTag = ("<p id='wait-list>  Waitlist: " + snap.val().eventWaitlist + "</p>")
+                rsvpTag = ("<p id='wait'>  Waitlist: " + snap.val().eventWaitlist + "</p>")
             }
             else {
                 rsvpTag = ("<p id='rsvp'> RSVP Count: " + snap.val().eventRsvpCount + "</p>");
