@@ -110,7 +110,7 @@ require([
 
             meetupAPI();
         });
-        database.ref('user-search').on('value', function (snap) {
+        database.ref('usersearch').on('value', function (snap) {
             view.graphics.removeAll();
         })
         //WHEN SEARCH IS DONE IT WILL TAKE INFO FROM DATABASE AND ADD POINTS WHERE THE EVENTS ARE
@@ -266,7 +266,12 @@ $('.add-user-search').on('click', function (view, Point) {
         outDuration: 500,
     });
     database.ref("/events").remove();
-    database.ref('user-search').set(true);
+    database.ref().update({
+        usersearch: $("#user-search").val()
+    });
+    database.ref().update({
+        usersearch: ""
+    });
     userMeetupText = $('#user-search').val();
     console.log('search term: ' + userMeetupText)
     meetupAPI();
