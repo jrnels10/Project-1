@@ -150,8 +150,8 @@ require([
                 popupTemplate: { // autocasts as new PopupTemplate()
 
                     title: "<a target='_blank' href='" + snap.val().eventLink + "'>" + snap.val().eventName + "</a>",
-                    content: "<p>Group: " + snap.val().eventGroupName + "</p><p>Time: " + snap.val().eventTime + " Date: " + snap.val().eventDate + "</p>"
-                    + "<p> RSVP Count: " + snap.val().eventRsvpCount + "  Waitlist: " + snap.val().eventWaitlist + "</p>"
+                    content: "<p>Group: " + snap.val().eventGroupName + "</p><p>Time: " + snap.val().eventTime + "</p><p> Date: " + snap.val().eventDate + "</p>"
+                    + rsvpTag
                   }
             });
             // pointGraphic.className('hello');
