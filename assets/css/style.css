@@ -14,8 +14,9 @@ body {
 .nav-wrapper {
   background-color: #93009c;
 }
+
 .brand-logo {
-    color: #380356 !important;
+    text-shadow: 2px 2px #555;
 }
 
 .btn {
