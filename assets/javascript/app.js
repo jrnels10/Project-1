@@ -112,7 +112,18 @@ require([
         });
 
         //WHEN SEARCH IS DONE IT WILL TAKE INFO FROM DATABASE AND ADD POINTS WHERE THE EVENTS ARE
-        database.ref("/events").on("child_added", function(snap) {
+
+        database.ref("/events").on("child_added", function (snap) {
+            var rsvpTag;
+            if ((snap.val().eventWaitlist) >= 1) {
+                console.log('rsvp is full')
+                rsvpTag = ("<p id='wait'>  Waitlist: " + snap.val().eventWaitlist + "</p>")
+            }
+            else {
+                rsvpTag = ("<p id='rsvp'> RSVP Count: " + snap.val().eventRsvpCount + "</p>");
+            }
+    
+
             console.log(snap.val());
             var point = {
                 type: "point", // autocasts as new Point()
