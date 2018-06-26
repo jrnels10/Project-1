@@ -11,12 +11,11 @@ body {
     height: 25%;
 }
 
-nav {
-    /* height: ; */
-    background: 
-    linear-gradient(
-       #ff5858, #f85787
-      );
+.nav-wrapper {
+  background-color: #93009c;
+}
+.brand-logo {
+    color: #380356 !important;
 }
 
 .btn {
@@ -30,8 +29,11 @@ nav {
 
 .esri-search__container {
     height: 40px;
-    /* background-color: rgb(0, 162, 255); */
-    
+    /* background-color: rgb(0, 162, 255); */ 
+}
+.esri-popup__header-title, .esri-popup__header-buttons, .esri-popup__icon, .esri-icon-close, .esri-popup__button, .esri-popup__main-container {
+    background-color: #380356;
+    color: white !important;
 }
 
 #container {
@@ -78,19 +80,22 @@ nav {
     width: 120px;;
     text-align: center;
 }
+.pop-up-title {
+    text-shadow: 2px 2px #555;
+    color: white !important;
+    font-weight: bold;
+}
 .dates {
     text-align: center;
 }
 
-/* #results {
-    content: '';
-    width: 200px;
-    height:200px;
-    position: absolute;
-    top: 0;
-    right: 0;
-    z-index: 1;
-} */
+.esri-popup__content {
+    height:250px;
+    background-color: whitesmoke;
+}
+.esri-popup__main-container {
+    border: solid purple 4px;
+}
 
 
     /* ------------ABOUT INDEX-------------- */
