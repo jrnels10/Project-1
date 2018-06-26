@@ -32,8 +32,8 @@ body {
     /* background-color: rgb(0, 162, 255); */ 
 }
 .esri-popup__header-title, .esri-popup__header-buttons, .esri-popup__icon, .esri-icon-close, .esri-popup__button, .esri-popup__main-container {
-    background-color: #380356;
-    color: white !important;
+    background-color: #e8d7f1;
+    color: #380356 !important;
 }
 
 #container {
@@ -81,7 +81,8 @@ body {
     text-align: center;
 }
 .pop-up-title {
-    text-shadow: 2px 2px #555;
+    font-size: 25px;
+    text-shadow: 1.5px 1.5px #555;
     color: white !important;
     font-weight: bold;
 }
