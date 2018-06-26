@@ -63,7 +63,8 @@ require([
 
         // Add the search widget to the top right corner of the view
         view.ui.add(searchWidget, {
-            position: "top-right"
+            position: "top-right",
+            className: "search-box-close"
         });
         searchWidget.on("search-complete", function (event) {
             //Center map to closest location
@@ -93,6 +94,8 @@ require([
             }
 
             centerMap(view, Point, lat, long, isComma); //center map
+            view.popup.visible = false;
+
             //END OF FIX
 
             // console.log("Search started.");
@@ -113,6 +116,7 @@ require([
 
         //WHEN SEARCH IS DONE IT WILL TAKE INFO FROM DATABASE AND ADD POINTS WHERE THE EVENTS ARE
         database.ref("/events").on("child_added", function (snap) {
+            view.popup.visible = true;
             var rsvpTag;
             if ((snap.val().eventWaitlist) >= 1) {
                 console.log('rsvp is full')
@@ -121,7 +125,7 @@ require([
             else {
                 rsvpTag = ("<p id='rsvp'> RSVP Count: " + snap.val().eventRsvpCount + "</p>");
             }
-    
+
             console.log(snap.val());
             var point = {
                 type: "point", // autocasts as new Point()
@@ -133,9 +137,9 @@ require([
             // Create a symbol for drawing the point
             var markerSymbol = {
                 type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
-                color: [176,0,178],
+                color: [107, 0, 120],
                 outline: { // autocasts as new SimpleLineSymbol()
-                    color: [56,3,86],
+                    color: [176, 0, 178],
                     width: 1
                 }
             };
@@ -148,14 +152,18 @@ require([
                 popupTemplate: { // autocasts as new PopupTemplate()
 
                     title: "<a class='pop-up-title' target='_blank' href='" + snap.val().eventLink + "'>" + snap.val().eventName + "</a>",
-                    content: "<p>Group: " + snap.val().eventGroupName + "</p><p>Time: " + snap.val().eventTime + "</p><p> Date: " + snap.val().eventDate + "</p>"
-                    + rsvpTag
-                  }
+                    content: "<p>Group: " + snap.val().eventGroupName + "</p><p> Date: " + snap.val().eventDate + " / Time: " + snap.val().eventTime + "</p>"
+                        + rsvpTag
+                }
             });
+
             // pointGraphic.className('hello');
             view.graphics.add(pointGraphic);
         })
         //END OF ADDING POINTS
+        database.ref("usersearch").on("value", function () {
+            view.graphics.removeAll();
+        })
     }
 
 
