@@ -10,13 +10,15 @@ body {
 #gifDiv {
     height: 25%;
 }
+
 circle {
-    box-shadow: 5px 5px #380356 !important;
+    box-shadow: 5px 5px #86009c!important;
 }
 
 .nav-wrapper {
   background-color: #93009c;
 }
+
 .brand-logo {
     color: whitesmoke !important;
     font-weight: bold;
@@ -26,29 +28,52 @@ circle {
 .btn {
     font-size: 12.5px;
     margin: 10px;
+    background-color: #ca00d7 !important;
+}
+
+#grey-vector, #streets, #hybrid {
+    color: #93009c;
 }
 
 #btn-space li {
     margin: 0;
 }
 .first-drop, .second-drop {
-    background-color: #380356 !important;
+    background-color: #ca00d7!important;
 }
 input {
-    border-bottom: #93009c solid 2px !important;
+    border-bottom: #9c008b solid 2px !important;
 }
 
 .esri-popup__header-title, .esri-popup__header-buttons, .esri-popup__icon, .esri-icon-close, .esri-popup__button, .esri-popup__main-container, .esri-search__container, .esri-widget-button {
-    background-color: #c9c9c9;
-    color: #380356 !important;
+    background-color: #FFF;
+    color: #ca00d7 !important;
     border: 0px;
 }
-.esri-feature__size-container, .esri-search__container {
+.esri-feature__size-container, .esri-search__container,  {
     height:auto;
     border: solid purple 1px;
 }
 .esri-popup__main-container {
     width: 250px !important;
+}
+.esri-popup__header-title, .esri-popup__main-container,  .esri-popup__header-buttons,  .esri-popup__button, .esri-popup__icon, .esri-feature__main-container{
+    background: #ca00d7;
+    color: #FFF !important;
+}
+.esri-popup__main-container   .esri-icon-close{
+    background: #ca00d7;
+    color: #FFF !important;
+}
+
+.esri-search-result-renderer__more-results-item {
+    background: #ca00d7;
+    color: #fff;
+}
+
+.esri-search__clear-button {
+    background: #fff !important;
+    color: #ca00d7 !important;
 }
 
 #container {
@@ -66,7 +91,7 @@ input {
 }
 #rsvp {
     font-weight: bold;
-    color: green;
+    color: #76ff03;
 }
 #wait {
     font-weight: bold;
@@ -96,8 +121,8 @@ input {
     text-align: center;
 }
 .pop-up-title {
-    font-size: 25px;
-    text-shadow: 1.5px 1.5px #555;
+    font-size: 20px;
+    /* text-shadow: 1.5px 1.5px #555; */
     color: white !important;
     font-weight: bold;
 }
