@@ -135,10 +135,10 @@ require([
             // Create a symbol for drawing the point
             var markerSymbol = {
                 type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
-                color: [170, 66, 244],
+                color: [176,0,178],
                 outline: { // autocasts as new SimpleLineSymbol()
-                    color: [255, 255, 255],
-                    width: 2
+                    color: [56,3,86],
+                    width: 1
                 }
             };
             // markerSymbol.addClass('test');
@@ -149,9 +149,9 @@ require([
                 symbol: markerSymbol,
                 popupTemplate: { // autocasts as new PopupTemplate()
 
-                    title: "<a target='_blank' href='" + snap.val().eventLink + "'>" + snap.val().eventName + "</a>",
-                    content: "<p>Group: " + snap.val().eventGroupName + "</p><p>Time: " + snap.val().eventTime + " Date: " + snap.val().eventDate + "</p>"
-                    + "<p> RSVP Count: " + snap.val().eventRsvpCount + "  Waitlist: " + snap.val().eventWaitlist + "</p>"
+                    title: "<a class='pop-up-title' target='_blank' href='" + snap.val().eventLink + "'>" + snap.val().eventName + "</a>",
+                    content: "<p>Group: " + snap.val().eventGroupName + "</p><p>Time: " + snap.val().eventTime + "</p><p> Date: " + snap.val().eventDate + "</p>"
+                    + rsvpTag
                   }
             });
             // pointGraphic.className('hello');
