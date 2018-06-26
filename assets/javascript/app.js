@@ -110,20 +110,9 @@ require([
 
             meetupAPI();
         });
-        database.ref('usersearch').on('value', function (snap) {
-            view.graphics.removeAll();
-        })
+
         //WHEN SEARCH IS DONE IT WILL TAKE INFO FROM DATABASE AND ADD POINTS WHERE THE EVENTS ARE
-        database.ref("/events").on("child_added", function (snap) {
-            var rsvpTag;
-            if ((snap.val().eventWaitlist) >= 1) {
-                console.log('rsvp is full')
-                rsvpTag = ("<p id='wait-list>  Waitlist: " + snap.val().eventWaitlist + "</p>")
-            }
-            else {
-                rsvpTag = ("<p id='rsvp'> RSVP Count: " + snap.val().eventRsvpCount + "</p>");
-            }
-    
+        database.ref("/events").on("child_added", function(snap) {
             console.log(snap.val());
             var point = {
                 type: "point", // autocasts as new Point()
@@ -148,10 +137,11 @@ require([
                 geometry: point,
                 symbol: markerSymbol,
                 popupTemplate: { // autocasts as new PopupTemplate()
+
                     title: "<a target='_blank' href='" + snap.val().eventLink + "'>" + snap.val().eventName + "</a>",
                     content: "<p>Group: " + snap.val().eventGroupName + "</p><p>Time: " + snap.val().eventTime + " Date: " + snap.val().eventDate + "</p>"
-                        +  rsvpTag 
-                }
+                    + "<p> RSVP Count: " + snap.val().eventRsvpCount + "  Waitlist: " + snap.val().eventWaitlist + "</p>"
+                  }
             });
             // pointGraphic.className('hello');
             view.graphics.add(pointGraphic);
@@ -401,9 +391,4 @@ function convertDate(UNIX_timestamp) {
 }
 
 console.log(convertDate(1531357200000));
-
-
-
-
-
 
