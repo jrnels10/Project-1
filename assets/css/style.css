@@ -47,9 +47,16 @@ nav {
     margin: 0px;
     width:30%;
 }
-#
+#rsvp {
+    font-weight: bold;
+    color: green;
+}
+#wait-list {
+    font-weight: bold;
+    color: red;
+}
 
-h7 {
+#sdate {
     text-align: center;
     width: 100%;
     color: purple;
