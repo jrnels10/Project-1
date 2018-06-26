@@ -115,6 +115,15 @@ require([
         })
         //WHEN SEARCH IS DONE IT WILL TAKE INFO FROM DATABASE AND ADD POINTS WHERE THE EVENTS ARE
         database.ref("/events").on("child_added", function (snap) {
+            var rsvpTag;
+            if ((snap.val().eventWaitlist) >= 1) {
+                console.log('rsvp is full')
+                rsvpTag = ("<p id='wait-list>  Waitlist: " + snap.val().eventWaitlist + "</p>")
+            }
+            else {
+                rsvpTag = ("<p id='rsvp'> RSVP Count: " + snap.val().eventRsvpCount + "</p>");
+            }
+    
             console.log(snap.val());
             var point = {
                 type: "point", // autocasts as new Point()
@@ -141,7 +150,7 @@ require([
                 popupTemplate: { // autocasts as new PopupTemplate()
                     title: "<a target='_blank' href='" + snap.val().eventLink + "'>" + snap.val().eventName + "</a>",
                     content: "<p>Group: " + snap.val().eventGroupName + "</p><p>Time: " + snap.val().eventTime + " Date: " + snap.val().eventDate + "</p>"
-                        + "<p> RSVP Count: " + snap.val().eventRsvpCount + "  Waitlist: " + snap.val().eventWaitlist + "</p>"
+                        +  rsvpTag 
                 }
             });
             // pointGraphic.className('hello');
@@ -154,7 +163,6 @@ require([
 
 
 );
-
 
 
 
@@ -223,20 +231,10 @@ $('.first-drop').dropdown({
 });
 $('.second-drop').dropdown({
     // hover: true,
-    constrainWidth: false,
+    // constrainWidth: false,
     inDuration: 500,
     outDuration: 500,
     closeOnClick: false,
-    coverTrigger: false, // Displays dropdown below the button
-});
-$('.third-drop').dropdown({
-    // hover: true,
-    inDuration: 500,
-    outDuration: 500,
-    closeOnClick: false,
-    // constrain_width: false, // Does not change width of dropdown to that of the activator
-    // hover: true, // Activate on hover
-    // gutter: ($('.dropdown-content').width()*3)/2.5 + 2, // Spacing from edge
     coverTrigger: false, // Displays dropdown below the button
 });
 
@@ -262,7 +260,7 @@ var userMeetupDateEnd = endDate;
 console.log('before click ' + userMeetupDateStart)
 console.log('before click ' + userMeetupDateEnd)
 
-$('.add-user-search').on('click', function () {
+$('.add-user-search').on('click', function (view, Point) {
     $('.second-drop').dropdown({
         closeOnClick: false,
         outDuration: 500,
@@ -275,7 +273,7 @@ $('.add-user-search').on('click', function () {
     if (($('#start-date').val() == '') && ($('#end-date').val() == '')) {
         console.log('start date is blank');
         database.ref("/events").remove();
-        database.ref('user-search').set(true);    
+        database.ref('user-search').set(true);
         userMeetupDateStart = today;
         userMeetupDateEnd = endDate;
         meetupAPI();
@@ -284,7 +282,7 @@ $('.add-user-search').on('click', function () {
     else if (($('#start-date').val()) && ($('#end-date').val() == '')) {
         console.log('start date but no end date');
         database.ref("/events").remove();
-        database.ref('user-search').set(true);    
+        database.ref('user-search').set(true);
         userMeetupDateStart = $('#start-date').val();
         userMeetupDateEnd = endDate;
         meetupAPI();
@@ -293,15 +291,15 @@ $('.add-user-search').on('click', function () {
     else if (($('#start-date').val() == '') && ($('#end-date').val())) {
         console.log('end date but no start date');
         database.ref("/events").remove();
-        database.ref('user-search').set(true);  
-        userMeetupDateStart = today;  
+        database.ref('user-search').set(true);
+        userMeetupDateStart = today;
         userMeetupDateEnd = $('#end-date').val();
         meetupAPI();
 
     }
     else {
         database.ref("/events").remove();
-        database.ref('user-search').set(true);    
+        database.ref('user-search').set(true);
         userMeetupDateStart = $('#start-date').val();
         userMeetupDateEnd = $('#end-date').val();
         meetupAPI();
