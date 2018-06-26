@@ -110,10 +110,9 @@ require([
 
             meetupAPI();
         });
-        database.ref('user-search').on('value', function (snap) {
-            view.graphics.removeAll();
-        })
+
         //WHEN SEARCH IS DONE IT WILL TAKE INFO FROM DATABASE AND ADD POINTS WHERE THE EVENTS ARE
+
         database.ref("/events").on("child_added", function (snap) {
             var rsvpTag;
             if ((snap.val().eventWaitlist) >= 1) {
@@ -124,6 +123,7 @@ require([
                 rsvpTag = ("<p id='rsvp'> RSVP Count: " + snap.val().eventRsvpCount + "</p>");
             }
     
+
             console.log(snap.val());
             var point = {
                 type: "point", // autocasts as new Point()
@@ -148,10 +148,11 @@ require([
                 geometry: point,
                 symbol: markerSymbol,
                 popupTemplate: { // autocasts as new PopupTemplate()
+
                     title: "<a target='_blank' href='" + snap.val().eventLink + "'>" + snap.val().eventName + "</a>",
                     content: "<p>Group: " + snap.val().eventGroupName + "</p><p>Time: " + snap.val().eventTime + " Date: " + snap.val().eventDate + "</p>"
-                        +  rsvpTag 
-                }
+                    + "<p> RSVP Count: " + snap.val().eventRsvpCount + "  Waitlist: " + snap.val().eventWaitlist + "</p>"
+                  }
             });
             // pointGraphic.className('hello');
             view.graphics.add(pointGraphic);
@@ -266,7 +267,12 @@ $('.add-user-search').on('click', function (view, Point) {
         outDuration: 500,
     });
     database.ref("/events").remove();
-    database.ref('user-search').set(true);
+    database.ref().update({
+        usersearch: $("#user-search").val()
+    });
+    database.ref().update({
+        usersearch: ""
+    });
     userMeetupText = $('#user-search').val();
     console.log('search term: ' + userMeetupText)
     meetupAPI();
@@ -396,9 +402,4 @@ function convertDate(UNIX_timestamp) {
 }
 
 console.log(convertDate(1531357200000));
-
-
-
-
-
 
