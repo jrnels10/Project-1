@@ -2,6 +2,8 @@ body {
     font-family: 'Boogaloo', cursive;
     
 }
+
+
 #viewDiv {
     padding: 0;
     margin: 0;
@@ -193,6 +195,7 @@ input {
 
     .white-text {
         padding: 0 50px 0 50px;
+        font-size: 22px !important;
     }
 
     .bio-pic {
@@ -205,10 +208,17 @@ input {
         color: white;
     } */
 
-    .img__description:hover a{
+    .img__description:hover {
         /* background: blue; */
-        color: #fff;
+        /* color: #fff !important; */
+        text-shadow: 2px 2px #d1cbcb;
     }
+
+    .img__description a {
+        color: #9c27b0;
+        font-size: 20px;
+    }
+
     /* .img__wrap {
         position: relative;
         height: 490px;
