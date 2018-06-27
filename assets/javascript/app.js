@@ -112,10 +112,6 @@ require([
         });
 
         //WHEN SEARCH IS DONE IT WILL TAKE INFO FROM DATABASE AND ADD POINTS WHERE THE EVENTS ARE
-<<<<<<< HEAD
-=======
-
->>>>>>> a713ee5668a4438c8e6b2693af377ca087f73ceb
         database.ref("/events").on("child_added", function (snap) {
             var rsvpTag;
             if ((snap.val().eventWaitlist) >= 1) {
@@ -126,10 +122,6 @@ require([
                 rsvpTag = ("<p id='rsvp'> RSVP Count: " + snap.val().eventRsvpCount + "</p>");
             }
     
-<<<<<<< HEAD
-=======
-
->>>>>>> a713ee5668a4438c8e6b2693af377ca087f73ceb
             console.log(snap.val());
             var point = {
                 type: "point", // autocasts as new Point()
@@ -157,7 +149,7 @@ require([
 
                     title: "<a target='_blank' href='" + snap.val().eventLink + "'>" + snap.val().eventName + "</a>",
                     content: "<p>Group: " + snap.val().eventGroupName + "</p><p>Time: " + snap.val().eventTime + " Date: " + snap.val().eventDate + "</p>"
-                    + "<p> RSVP Count: " + snap.val().eventRsvpCount + "  Waitlist: " + snap.val().eventWaitlist + "</p>"
+                    + rsvpTag
                   }
             });
             // pointGraphic.className('hello');
