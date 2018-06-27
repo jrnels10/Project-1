@@ -65,7 +65,8 @@ require([
 
         // Add the search widget to the top right corner of the view
         view.ui.add(searchWidget, {
-            position: "top-right"
+            position: "top-right",
+            className: "search-box-close"
         });
         searchWidget.on("search-complete", function (event) {
             //Center map to closest location
@@ -95,6 +96,8 @@ require([
             }
 
             centerMap(view, Point, lat, long, isComma); //center map
+            view.popup.visible = false;
+
             //END OF FIX
 
             // console.log("Search started.");
@@ -112,20 +115,19 @@ require([
 
             meetupAPI();
         });
-        database.ref('user-search').on('value', function (snap) {
-            view.graphics.removeAll();
-        })
+
         //WHEN SEARCH IS DONE IT WILL TAKE INFO FROM DATABASE AND ADD POINTS WHERE THE EVENTS ARE
         database.ref("/events").on("child_added", function (snap) {
+            view.popup.visible = true;
             var rsvpTag;
             if ((snap.val().eventWaitlist) >= 1) {
                 console.log('rsvp is full')
-                rsvpTag = ("<p id='wait-list>  Waitlist: " + snap.val().eventWaitlist + "</p>")
+                rsvpTag = ("<p id='wait'>  Waitlist: " + snap.val().eventWaitlist + "</p>")
             }
             else {
                 rsvpTag = ("<p id='rsvp'> RSVP Count: " + snap.val().eventRsvpCount + "</p>");
             }
-    
+
             console.log(snap.val());
             var point = {
                 type: "point", // autocasts as new Point()
@@ -137,10 +139,10 @@ require([
             // Create a symbol for drawing the point
             var markerSymbol = {
                 type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
-                color: [170, 66, 244],
+                color: [107, 0, 120],
                 outline: { // autocasts as new SimpleLineSymbol()
-                    color: [255, 255, 255],
-                    width: 2
+                    color: [176, 0, 178],
+                    width: 1
                 }
             };
             // markerSymbol.addClass('test');
@@ -150,15 +152,20 @@ require([
                 geometry: point,
                 symbol: markerSymbol,
                 popupTemplate: { // autocasts as new PopupTemplate()
-                    title: "<a target='_blank' href='" + snap.val().eventLink + "'>" + snap.val().eventName + "</a>",
-                    content: "<p>Group: " + snap.val().eventGroupName + "</p><p>Time: " + snap.val().eventTime + " Date: " + snap.val().eventDate + "</p>"
-                        +  rsvpTag 
+
+                    title: "<a class='pop-up-title' target='_blank' href='" + snap.val().eventLink + "'>" + snap.val().eventName + "</a>",
+                    content: "<p>Group: " + snap.val().eventGroupName + "</p><p> Date: " + snap.val().eventDate + " / Time: " + snap.val().eventTime + "</p>"
+                        + rsvpTag
                 }
             });
+
             // pointGraphic.className('hello');
             view.graphics.add(pointGraphic);
         })
         //END OF ADDING POINTS
+        database.ref("usersearch").on("value", function () {
+            view.graphics.removeAll();
+        })
     }
 
 
@@ -268,7 +275,12 @@ $('.add-user-search').on('click', function (view, Point) {
         outDuration: 500,
     });
     database.ref("/events").remove();
-    database.ref('user-search').set(true);
+    database.ref().update({
+        usersearch: $("#user-search").val()
+    });
+    database.ref().update({
+        usersearch: ""
+    });
     userMeetupText = $('#user-search').val();
     console.log('search term: ' + userMeetupText)
     meetupAPI();
@@ -321,85 +333,96 @@ var meetupAPI = function () {
             url: url,
             success: function (result) {
                 console.log(result);
+                var eventLat;
+                var eventLon;
                 for (i = 0; i < result.data.events.length; i++) {
                     console.log("ran")
+                    if (result.data.events[i].venue) {
+                        eventLat = result.data.events[i].venue.lat;
+                        eventLon = result.data.events[i].venue.lon;
+                    }
+                    else {
+                        eventLat = result.data.events[i].group.lat;
+                        eventLon = result.data.events[i].group.lon;
+                    }
+
                     database.ref("/events").push({
                         eventName: result.data.events[i].name,
-                        eventLat: result.data.events[i].group.lat,
-                        eventLon: result.data.events[i].group.lon,
-                        // eventDescription: result.data.events[i].description,
-                        // eventAddress: result.data.events[i].venue.address_1,
+                        eventLat,
+                        eventLon,
                         eventTime: convertTime(result.data.events[i].time),
                         eventDate: convertDate(result.data.events[i].time),
                         eventRsvpCount: result.data.events[i].yes_rsvp_count,
                         eventWaitlist: result.data.events[i].waitlist_count,
                         eventGroupName: result.data.events[i].group.name,
                         eventLink: result.data.events[i].link
-                    })
+
+
+
+                    });
 
                 }
 
             }
         });
-
-    })
-
+    });
 }
 
-var parseTime = function (timeInput) {
-    var time = timeInput; // your input
 
-    time = time.split(':'); // convert to array
+    var parseTime = function (timeInput) {
+        var time = timeInput; // your input
 
-    // fetch
-    var hours = Number(time[0]);
-    var minutes = Number(time[1]);
-    // var seconds = Number(time[2]);
+        time = time.split(':'); // convert to array
 
-    // calculate
-    var timeValue;
+        // fetch
+        var hours = Number(time[0]);
+        var minutes = Number(time[1]);
+        // var seconds = Number(time[2]);
 
-    if (hours > 0 && hours <= 12) {
-        timeValue = "" + hours;
-    } else if (hours > 12) {
-        timeValue = "" + (hours - 12);
-    } else if (hours == 0) {
-        timeValue = "12";
+        // calculate
+        var timeValue;
+
+        if (hours > 0 && hours <= 12) {
+            timeValue = "" + hours;
+        } else if (hours > 12) {
+            timeValue = "" + (hours - 12);
+        } else if (hours == 0) {
+            timeValue = "12";
+        }
+
+        timeValue += (minutes < 10) ? ":0" + minutes : ":" + minutes;  // get minutes
+        // timeValue += (seconds < 10) ? ":0" + seconds : ":" + seconds;  // get seconds
+        timeValue += (hours >= 12) ? " P.M." : " A.M.";  // get AM/PM
+
+        return timeValue;
     }
 
-    timeValue += (minutes < 10) ? ":0" + minutes : ":" + minutes;  // get minutes
-    // timeValue += (seconds < 10) ? ":0" + seconds : ":" + seconds;  // get seconds
-    timeValue += (hours >= 12) ? " P.M." : " A.M.";  // get AM/PM
-
-    return timeValue;
-}
 
 
+    function convertTime(UNIX_timestamp) {
+        var a = new Date(UNIX_timestamp);
+        var hour = a.getHours();
+        var min = a.getMinutes();
+        var sec = a.getSeconds();
+        var time = hour + ':' + min + ':' + sec;
+        return parseTime(time);
+    }
 
-function convertTime(UNIX_timestamp) {
-    var a = new Date(UNIX_timestamp);
-    var hour = a.getHours();
-    var min = a.getMinutes();
-    var sec = a.getSeconds();
-    var time = hour + ':' + min + ':' + sec;
-    return parseTime(time);
-}
+    console.log(parseTime(convertTime(1531357200000)));
 
-console.log(parseTime(convertTime(1531357200000)));
+    function convertDate(UNIX_timestamp) {
+        var a = new Date(UNIX_timestamp);
+        var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        var year = a.getFullYear();
+        var month = months[a.getMonth()];
+        var date = a.getDate();
+        var time = date + ' ' + month + ' ' + year;
+        return time;
+    }
 
-function convertDate(UNIX_timestamp) {
-    var a = new Date(UNIX_timestamp);
-    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    var year = a.getFullYear();
-    var month = months[a.getMonth()];
-    var date = a.getDate();
-    var time = date + ' ' + month + ' ' + year;
-    return time;
-}
+    console.log(convertDate(1531357200000));
 
-console.log(convertDate(1531357200000));
-
-
-$('.carousel').carousel();
-
-});
+    $(document).ready(function () {
+        $('.sidenav').sidenav();
+    });
+})
