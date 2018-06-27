@@ -1,4 +1,8 @@
-$(document).ready(function(){
+var sidebarListCreated = false;
+var sidebarListItemCount = 0;
+var sidebarListItems = {};
+var sidebarView;
+var sideBarPoint;
 
 // ==================================================================================================
 // ============================ Map API =============================================================
@@ -78,7 +82,6 @@ require([
             if (alias_usa.indexOf(event.target.searchTerm.toLowerCase()) !== -1) {
                 long = -99.771;
                 lat = 38.22;
-                console.log("test");
             }
 
             var alias_canada = ["can", "canada"];
@@ -86,7 +89,6 @@ require([
             if (alias_canada.indexOf(event.target.searchTerm.toLowerCase()) !== -1) {
                 long = -100.65;
                 lat = 55.101;
-                console.log("test");
             }
 
             if (event.target.searchTerm.indexOf(',') !== -1) {
@@ -96,7 +98,7 @@ require([
             }
 
             centerMap(view, Point, lat, long, isComma); //center map
-            view.popup.visible = false;
+            setTimeout(function () { view.popup.close(); }, 1300);
 
             //END OF FIX
 
@@ -114,6 +116,34 @@ require([
             })
 
             meetupAPI();
+
+		//Logic for creating event list sidebar
+		if(sidebarListCreated)
+		{
+			//set list item count to 0
+			sidebarListItemCount = 0;
+			sidebarListItems = {};
+
+			//delete Sidebar
+			hideSidebarList();
+		}
+		else
+		{
+			sidebarListCreated = true;
+			
+			if(window.innerWidth <= 500)
+			{
+				var notVisible = "display: none;";
+			}
+			else
+			{
+				var notVisible = "";
+			}
+
+			//create sidebar button
+			$("body").prepend("<a class='btn' style='" + notVisible + "position: absolute; top: 145px; left: 5px; z-index: 50; opacity: 0; transition: opacity 1s; width: 240px; text-align: center;' href='javascript:createSidebarList()' id='event-list-button'>Show Event List</a>");
+			setTimeout(function () { $("#event-list-button").css({opacity: "1"}); }, 1000);
+		}
         });
 
         //WHEN SEARCH IS DONE IT WILL TAKE INFO FROM DATABASE AND ADD POINTS WHERE THE EVENTS ARE
@@ -161,6 +191,24 @@ require([
 
             // pointGraphic.className('hello');
             view.graphics.add(pointGraphic);
+
+		//Logic for creating event object and adding data per each item
+		sidebarListItems[sidebarListItemCount] = {};
+		sidebarListItems[sidebarListItemCount].lon = snap.val().eventLon;
+		sidebarListItems[sidebarListItemCount].lat = snap.val().eventLat;
+		sidebarListItems[sidebarListItemCount].link = snap.val().eventLink;
+		sidebarListItems[sidebarListItemCount].name = snap.val().eventName;
+		sidebarListItems[sidebarListItemCount].group = snap.val().eventGroupName;
+		sidebarListItems[sidebarListItemCount].date = snap.val().eventDate;
+		sidebarListItems[sidebarListItemCount].time = snap.val().eventTime;
+		sidebarListItems[sidebarListItemCount].rsvp = rsvpTag;
+
+		//Logic for creating event list sidebar button
+		sidebarListItemCount++;
+		sidebarView = view;
+		sidebarPoint = Point;
+		$("#event-list-button").text("Show Event List (" + sidebarListItemCount + ")");
+		
         })
         //END OF ADDING POINTS
         database.ref("usersearch").on("value", function () {
@@ -186,6 +234,118 @@ $('#streets').on('click', function () {
 $('#hybrid').on('click', function () {
     view.map = mapOne;
 })
+
+//Show Event List Button
+
+function createSidebarList()
+{
+	$("#event-list-button").text("Hide Event List (" + sidebarListItemCount + ")");
+	$("#event-list-button").attr("href", "javascript:hideSidebarList()");
+
+	sidebarView.popup.close();
+
+	if(window.innerWidth <= 500)
+	{
+		var notVisible = "display: none;";
+	}
+	else
+	{
+		var notVisible = "";
+	}
+
+	//create sidebar div
+	$("body").append("<div id='sidebar-list-div' style='" + notVisible + "position: absolute; top: 200px; left: 15px; z-index: 50; border: 1px solid gray; background-color: rgba(128, 0, 128, 0.5); width: 240px; height: 0vh; transition: height 500ms; overflow-y: scroll;'></div>");
+	setTimeout(function () { $("#sidebar-list-div").css({height: "70vh"}); }, 10);
+
+	//inject content
+	for(var sidebarEvent in sidebarListItems)
+	{
+		$("#sidebar-list-div").append("<div class='esri-widget' style='position: relative; background-color: #ca00d7; padding: 5px; line-height: 1.3em; color: white; border: 4px solid rgb(128, 0, 128); margin-bottom: 10px; font-weight: bold; font-size: 20px; padding-bottom: 0px;'>" +
+							"<a target='_blank' href='" + sidebarListItems[sidebarEvent].link + "' style='color: white; padding-right: 25px; display: block;'>" + sidebarListItems[sidebarEvent].name + "</a>" +
+							"<p style='font-size: 12px; font-weight: normal; margin-top: 4px; padding-right: 25px;'>Group: " + 
+							sidebarListItems[sidebarEvent].group + 
+							"</p>" + 
+							"<p style='font-size: 12px; font-weight: normal; margin-top: -8px; padding-right: 25px;'>Date: " + 
+							sidebarListItems[sidebarEvent].date + 
+							" / Time: " + 
+							sidebarListItems[sidebarEvent].time + 
+							"</p>" + 
+							"<p id='" + $(sidebarListItems[sidebarEvent].rsvp).attr('id') + "' style='font-size: 12px; margin-top: -8px;'>" + 
+							$(sidebarListItems[sidebarEvent].rsvp).text() + 
+							"</p><div style='position: absolute; top: 0px; right: 0px; width: 25px; height: 100%; line-height: 100%; background-color: rgb(128, 0, 128); display: flex; align-items: center; justify-content: center; cursor: pointer;' id='arrow-" + sidebarEvent + "' onClick='centerOnEvent(this.id)'><span style='display: inline-block; font-weight: normal; font-size: 10px;'>&gt;</span></div></div>");
+	}
+}
+
+function hideSidebarList()
+{
+	$("#event-list-button").text("Show Event List (" + sidebarListItemCount + ")");
+	$("#event-list-button").attr("href", "#");
+
+	//remove sidebar div
+	$("#sidebar-list-div").css({height: "0vh"});
+	setTimeout(function () { $("#sidebar-list-div").remove(); 
+					 $("#event-list-button").attr("href", "javascript:createSidebarList()");
+	}, 500);
+}
+
+var addEventOnce = false;
+
+function centerOnEvent(eventItemNumber)
+{
+	$("#circle-marker").remove();
+	highlightEvent(eventItemNumber);
+	var lat = sidebarListItems[eventItemNumber.replace("arrow-", "")].lat;
+	var lon = sidebarListItems[eventItemNumber.replace("arrow-", "")].lon;
+
+	sidebarView.popup.close();
+
+	var pt = new sidebarPoint({
+        latitude: lat,
+        longitude: lon
+      });
+
+      var scaleValue = 25000;
+
+      // go to the given point
+      sidebarView.goTo({
+          target: pt,
+          scale: scaleValue
+      });
+
+	//get middle of screen
+	var middleX = Math.floor(window.innerWidth / 2) + 1;
+	var middleY = Math.floor(window.innerHeight / 2) + 30;
+
+	$("body").append("<div id='circle-marker' style='position: absolute; top: " + (middleY - 9) + "px; left: " + (middleX - 9) + "px; width: 18px; height: 18px; border-radius: 50%; border: 0px solid #009688; opacity: 0; pointer-events: none; background-color: rgba(0,0,0,0)'></div>");
+	setTimeout(function () { $("#circle-marker").css({opacity: "1"}); 
+					 $("#" + eventItemNumber).focus(); 
+
+					 if(addEventOnce === false) 
+				       { 
+						addEventOnce = true; 
+						$(".esri-view-surface--inset-outline").on("focus", function() { $("#circle-marker").remove(); 
+																    $(lastHighlight).css("border-color", "rgb(128,0,128)"); 
+
+																    setTimeout(function () { if($(".esri-popup--shadow")[0] !== undefined) { hideSidebarList(); } }, 500);
+																    checkSidebarGone();
+						}); 
+																	
+					 }
+	}, 500);
+}
+
+var lastHighlight = "7";
+
+function highlightEvent(eventItemNumber)
+{
+	if(lastHighlight !== "7")
+	{
+		$(lastHighlight).css("border-color", "rgb(128,0,128)");
+	}
+	
+	lastHighlight = $("#" + eventItemNumber)[0].parentElement;
+	$(lastHighlight).css("border-color", "#009688");
+}
 
 //ZOOMS IN AND CENTERS MAP ON SEARCH
 function centerMap(view, Point, lat, lon, zoom) {
@@ -425,4 +585,3 @@ var meetupAPI = function () {
     $(document).ready(function () {
         $('.sidenav').sidenav();
     });
-});
