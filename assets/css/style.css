@@ -5,7 +5,7 @@ body {
 #viewDiv {
     padding: 0;
     margin: 0;
-    height: 93vh;
+    height: 91vh;
     width: 100%;
 }
 #gifDiv {
@@ -103,7 +103,11 @@ input {
 }
 #wait {
     font-weight: bold;
-    color: red;
+    color: #fff;
+    text-shadow: 1px 1px #555;
+    display: inline-block;
+    background: red;
+    letter-spacing: 1.5px;
 }
 
 #sdate {
@@ -191,8 +195,8 @@ input {
         padding: 0 50px 0 50px;
     }
 
-    .paulo-pic {
-        height: 490px;
+    .bio-pic {
+        height: 390px;
         width: 375x;
         border-radius: 15px;
     }
