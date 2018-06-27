@@ -5,8 +5,8 @@ $('.carousel.carousel-slider').carousel({
         
 
 //AUTOPLAYING CAROUSEL ON PAGE LOAD
-  setTimeout(autoplay, 15000);
-  function autoplay() {
-      $('.carousel').carousel('next');
-      setTimeout(autoplay, 15000);
-  }
+//   setTimeout(autoplay, 15000);
+//   function autoplay() {
+//       $('.carousel').carousel('next');
+//       setTimeout(autoplay, 15000);
+//   }

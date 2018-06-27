@@ -11,6 +11,26 @@ var mapOne;
 var mapTwo;
 var mapThree;
 var view;
+
+
+//Keyboard Events
+$( document ).ready(function() {
+	
+	$("#user-search")[0].onkeydown = formKeyCapture;
+	$("#start-date")[0].onkeydown = formKeyCapture;
+	$("#end-date")[0].onkeydown = formKeyCapture;
+
+});
+
+function formKeyCapture(e)
+{
+	if(e.keyCode === 13)
+	{
+		$('.add-user-search').trigger('click');
+	}
+}
+
+
 require([
     "esri/tasks/Locator",
     // loads code specific to creating a map
