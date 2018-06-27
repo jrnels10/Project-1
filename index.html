@@ -53,10 +53,10 @@
                 </li>
             </ul>
             <a class='dropdown-trigger btn left second-drop' href='#' data-target='dropdown2'>Filter Results</a>
-            <ul id='dropdown2' class='dropdown-content'>
+            <ul id='dropdown2' class='dropdown-content' style="overflow-x: hidden;">
                 <div class="col s12 m6">
                     <h7 id="sdate" style="color: purple">Search term</h7>
-                    <input type="text" id="user-search" placeholder="Optional">
+                    <input type="text" id="user-search" placeholder="Optional" style="">
                 </div>
                 <div class="col s12 m6">
                     <!-- <a class='dropdown-trigger btn left third-drop' href='#' data-target='dropdown3'>Search by date</a> -->
@@ -69,14 +69,16 @@
                     <!-- <input class="btn btn-success m-2 add-user-date" type="submit" value="Add Dates"> -->
                     <!-- </ul> -->
                 </div>
-                <input class="btn btn-success m-2 add-user-search" type="submit" value="Search">
+                <input class="btn btn-success m-2 add-user-search" type="submit" value="Search" style="padding: 0px;">
             </ul>
 
             <a href="#" class="brand-logo center hide-on-med-and-down">Map-Up</a>
             <ul id="nav-mobile" class="right hide-on-med-and-down">
-             
+             	<li>
+                    <a href="#" style="font-family: 'Boogaloo'; font-size: 20px;" id="render-favorites-lanucher">Favorites</a>
+                </li>
                 <li>
-                    <a href="about.html">About</a>
+                    <a href="about.html" style="font-family: 'Boogaloo'; font-size: 20px;">About</a>
                 </li>
             </ul>
         </div>
