@@ -424,4 +424,4 @@ var meetupAPI = function () {
     $(document).ready(function () {
         $('.sidenav').sidenav();
     });
-})
+});
