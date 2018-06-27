@@ -499,6 +499,33 @@ $('.add-user-search').on('click', function (view, Point) {
         console.log('start date: ' + userMeetupDateStart);
         console.log('end date: ' + userMeetupDateEnd);
     }
+    //Logic for creating event list sidebar
+	if(sidebarListCreated)
+	{
+		//set list item count to 0
+		sidebarListItemCount = 0;
+		sidebarListItems = {};
+		console.log("hi");
+		//delete Sidebar
+		hideSidebarList();
+	}
+	else
+	{
+		sidebarListCreated = true;
+		
+		if(window.innerWidth <= 500)
+		{
+			var notVisible = "display: none;";
+		}
+		else
+		{
+			var notVisible = "";
+		}
+
+		//create sidebar button
+		$("body").prepend("<a class='btn' style='" + notVisible + "position: absolute; top: 145px; left: 5px; z-index: 50; opacity: 0; transition: opacity 1s; width: 240px; text-align: center;' href='javascript:createSidebarList()' id='event-list-button'>Show Event List</a>");
+		setTimeout(function () { $("#event-list-button").css({opacity: "1"}); }, 1000);
+	}
 })
 var meetupAPI = function () {
     database.ref().once("value").then(function (snap) {
