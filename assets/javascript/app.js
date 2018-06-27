@@ -157,7 +157,6 @@ require([
             else {
                 rsvpTag = ("<p id='rsvp'> RSVP Count: " + snap.val().eventRsvpCount + "</p>");
             }
-
             console.log(snap.val());
             var point = {
                 type: "point", // autocasts as new Point()
