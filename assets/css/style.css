@@ -35,6 +35,7 @@ circle {
     background-color: #380356 !important;
 }
 input {
+    padding-left: 2px;
     border-bottom: #93009c solid 2px !important;
 }
 
