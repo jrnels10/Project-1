@@ -4,15 +4,9 @@ $('.carousel.carousel-slider').carousel({
   });
         
 
-  // var nextSlide = function (){
-  //   instance.set();
-  //   setTimeout (nextSlide, 9000)
-
-  // }
-
-
-  setTimeout(autoplay, 5000);
+//AUTOPLAYING CAROUSEL ON PAGE LOAD
+  setTimeout(autoplay, 15000);
   function autoplay() {
       $('.carousel').carousel('next');
-      setTimeout(autoplay, 5000);
+      setTimeout(autoplay, 15000);
   }

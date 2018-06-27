@@ -183,7 +183,7 @@ input {
     }
 
     .paulo-pic {
-        height: 490px;
+        height: 400px;
         width: 375x;
         border-radius: 15px;
     }
@@ -192,10 +192,17 @@ input {
         color: white;
     } */
 
-    .img__description:hover a{
+    .img__description:hover {
         /* background: blue; */
-        color: #fff;
+        /* color: #fff !important; */
+        text-shadow: 2px 2px #d1cbcb;
     }
+
+    .img__description a {
+        color: #9c27b0;
+        font-size: 18px;
+    }
+
     /* .img__wrap {
         position: relative;
         height: 490px;
