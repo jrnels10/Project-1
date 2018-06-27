@@ -96,7 +96,7 @@ require([
             }
 
             centerMap(view, Point, lat, long, isComma); //center map
-            view.popup.visible = false;
+            setTimeout(function () { view.popup.close(); }, 1300);
 
             //END OF FIX
 
