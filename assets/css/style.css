@@ -1,5 +1,5 @@
 body {
-    height: 100vh
+    height: 100vh;
 }
 #viewDiv {
     padding: 0;
@@ -137,31 +137,91 @@ input {
 }
 
 
-    /* ------------ABOUT INDEX-------------- */
-#about-body {
-    /* background: #e7c8f7; */
+    /* -------------------------------ABOUT INDEX------------------------------------- */
+.about-nav{
+    background: #9c27b0;
     /* meetup purple */
     /* background: #831eb6; */
-    background-image: url('http://l.rgbimg.com/cache1uwUzV/users/x/xy/xymonau/600/o4qQyDu.jpg');
+    /* background-image: url('http://l.rgbimg.com/cache1uwUzV/users/x/xy/xymonau/600/o4qQyDu.jpg');
     background-repeat: no-repeat;
-    background-size: 2000px 2000px;
+    background-size: 2000px 2000px; */
 }
 
-#about-image {
+/* #about-image {
     border-radius: 50px;
-}
+} */
 
 .card {
-    border-radius: 30px;
+    /* border-radius: 30px;
     margin-top: 25px;
+    height: 700px;
     font-size: 16px;
     font-family: Arial, Helvetica, sans-serif;
     overflow-wrap: break-word;
-    background: 
-    linear-gradient(
-       #ff5858, #f85787
-      );
+    background: #9c27b0; */
     /* overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap; */
 }
+
+/* .pic-slide4 {
+    background-image: url("");
+} */
+
+    .carousel.carousel-slider { 
+     height: 93vh;
+    }
+
+    .carousel-item  {
+        text-align: center;
+        padding: 0px;
+        letter-spacing: 1px;
+    }
+
+    .white-text {
+        padding: 0 50px 0 50px;
+    }
+
+    .paulo-pic {
+        height: 490px;
+        width: 375x;
+        border-radius: 15px;
+    }
+
+    /* .img__description {
+        color: white;
+    } */
+
+    .img__description:hover a{
+        /* background: blue; */
+        color: #fff;
+    }
+    /* .img__wrap {
+        position: relative;
+        height: 490px;
+        width: 375px;
+      }
+
+    .img__description {
+        position: unset;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #f09bebb8;
+        color: #fff;
+        visibility: hidden;
+        opacity: 0;
+      
+        /* transition effect. not necessary */
+        /* transition: opacity .2s, visibility .2s;
+      }
+    
+    .img__wrap:hover .img__description {
+        visibility: visible;
+        opacity: 1;
+    } */ 
+
+
+
+ 
