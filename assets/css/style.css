@@ -1,5 +1,6 @@
 body {
-    height: 100vh;
+    font-family: 'Boogaloo', cursive;
+    
 }
 #viewDiv {
     padding: 0;
@@ -9,6 +10,9 @@ body {
 }
 #gifDiv {
     height: 25%;
+}
+a, p, h2, li, .esri-search-result-renderer__more-results-item, #viewDiv {
+    font-family: 'Boogaloo', cursive !important;
 }
 
 circle {
@@ -21,6 +25,7 @@ circle {
 
 .brand-logo {
     color: whitesmoke !important;
+    font-family: 'Boogaloo', cursive;
     font-weight: bold;
     text-shadow: 3px 3px #555;
 }
@@ -39,9 +44,12 @@ circle {
     margin: 0;
 }
 .first-drop, .second-drop {
+    font-family: 'Boogaloo', cursive;
     background-color: #ca00d7!important;
 }
 input {
+    padding-left: 4px !important;
+    font-family: 'Boogaloo', cursive !important;
     border-bottom: #9c008b solid 2px !important;
 }
 
@@ -99,6 +107,7 @@ input {
 }
 
 #sdate {
+    font-family: 'Boogaloo', cursive !important;
     text-align: center;
     width: 100%;
     color: purple;
@@ -112,12 +121,12 @@ input {
     margin-left: 15px;
 }
 #user-search {
-    margin-left: 15px;
-    margin-right: 15px;
+    margin-left: 0px;
+    margin-right: 0px;
     margin-bottom:0px;
     padding: 5px;
     height: 20px;
-    width: 120px;;
+    width: 100%;
     text-align: center;
 }
 .pop-up-title {
