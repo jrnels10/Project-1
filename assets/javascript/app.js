@@ -642,58 +642,101 @@ function showSortOptions() {
 
 var sortOrder = [];
 function sortSidebarList(category) {
-    sortOrder = [];
+        sortOrder = [];
+	
+	var myArray = [];
+	var myArray2 = [];
+	var myDuplicateArray = [];
+	var myDuplicateLabel = 0;
+	var mySortedArray;
 
-    var myArray = [];
-    var mySortedArray;
+	if(category === "name1" || category === "name2")
+	{
+		sortState = 1;
+		for(var props in sidebarListItems)
+		{
+			myArray.push(sidebarListItems[props].name);
+			myArray2.push(sidebarListItems[props].name);
+		}
+	}
+	else if(category === "date1" || category === "date2")
+	{	
+		sortState = 3;
+		for(var props in sidebarListItems)
+		{
+			var dateString = sidebarListItems[props].date;
 
-    if (category === "name1" || category === "name2") {
-        sortState = 1;
-        for (var props in sidebarListItems) {
-            myArray.push(sidebarListItems[props].name);
-        }
-    }
-    else if (category === "date1" || category === "date2") {
-        sortState = 3;
-        for (var props in sidebarListItems) {
-            var dateString = sidebarListItems[props].date;
+			var dayMask = /([^\s]+)/;
+			var dayNumber = dayMask.exec(dateString);
 
-            var dayMask = /([^\s]+)/;
-            var dayNumber = dayMask.exec(dateString);
+			var monthNameMask = /[a-z]{3}/i;
+			var monthName = monthNameMask.exec(dateString);
+			var monthNumber = new Date(Date.parse(monthName[0] +" 1, 2012")).getMonth() + 1;
 
-            var monthNameMask = /[a-z]{3}/i;
-            var monthName = monthNameMask.exec(dateString);
-            var monthNumber = new Date(Date.parse(monthName[0] + " 1, 2012")).getMonth() + 1;
+			var yearMask = /[0-9]{4}/;
+			var yearNumber = yearMask.exec(dateString);
 
-            var yearMask = /[0-9]{4}/;
-            var yearNumber = yearMask.exec(dateString);
+			var dateUTC = Date.UTC(yearNumber[0], monthNumber, dayNumber[0]);
 
-            var dateUTC = Date.UTC(yearNumber[0], monthNumber, dayNumber[0]);
+			myArray.push(dateUTC);
+			myArray2.push(dateUTC);
+		}
+	}
 
-            myArray.push(dateUTC);
-        }
-    }
+	//get list of duplicates
+	for(var i = 0; i < myArray.length; i++) 
+	{
+		var duplicateIndex = 0;
+		for(var q = i; q < myArray.length - i; q++)
+		{
+			if(myArray[i] === myArray[q])
+			{
+				if(myDuplicateArray.indexOf(myArray[i]) === -1)
+				{
+					myDuplicateArray.push(myArray[i]);
+				}
+			}
+		}
+	}
 
-    mySortedArray = myArray.slice(0).sort();
+	//make all duplicates unique
+	for(var x = 0; x < myArray.length; x++) 
+	{
+		if(myDuplicateArray.indexOf(myArray[x]) !== -1)
+		{
+			//if our entry was a duplicate
+			myDuplicateLabel++;
+			myArray2[x] += myDuplicateLabel;
+		}
+	}
 
-    if (category === "name2" || category === "date2") {
-        sortState++;
-        mySortedArray.reverse();
-    }
+	//sort the array
+	mySortedArray = myArray2.slice(0).sort();
 
-    for (var i = 0; i < mySortedArray.length; i++) {
-        sortOrder.push(myArray.indexOf(mySortedArray[i]));
-    }
+	//we reverse the array if the sort chosen was the reverse state
+	if(category === "name2" || category === "date2")
+	{
+		sortState++;
+		mySortedArray.reverse();	
+	}
 
-    //restore button attrs
-    $("#sort-list-button").html("Sort List");
-    $("#sort-list-button").css({ width: "240px", color: "white" });
+	//we get the new positions of all elements and push it to an array called sortOrder
+        //later, we will remove the div and write it with the new order in sortOrder
+	for(var y = 0; y < mySortedArray.length; y++) 
+	{
+		var theNewIndex = myArray2.indexOf(mySortedArray[y]);
 
-    setTimeout(function () {
-        $("#sort-list-button").attr("href", "javascript:showSortOptions()");
-    }, 250);
+		sortOrder.push(theNewIndex);
+	}
 
-    applyNewSortOrder();
+	//restore button attrs
+	$("#sort-list-button").html("Sort List");
+	$("#sort-list-button").css({width: "240px", color: "white"});
+
+	setTimeout(function () { $("#sort-list-button").attr("href", "javascript:showSortOptions()");
+	}, 250);
+
+	applyNewSortOrder();
 }
 
 function applyNewSortOrder() {
