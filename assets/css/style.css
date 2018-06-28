@@ -1,18 +1,19 @@
 body {
-    font-family: 'Boogaloo', cursive;
-    
+
 }
+
+
 #viewDiv {
     padding: 0;
     margin: 0;
-    height: 93vh;
+    height: 91vh;
     width: 100%;
 }
 #gifDiv {
     height: 25%;
 }
 a, p, h2, li, .esri-search-result-renderer__more-results-item, #viewDiv {
-    font-family: 'Boogaloo', cursive !important;
+    /*font-family: 'Boogaloo', cursive !important;*/
 }
 
 circle {
@@ -28,6 +29,7 @@ circle {
     font-family: 'Boogaloo', cursive;
     font-weight: bold;
     text-shadow: 3px 3px #555;
+    font-family: 'Boogaloo', cursive;
 }
 
 .btn {
@@ -38,6 +40,7 @@ circle {
 
 #grey-vector, #streets, #hybrid {
     color: #93009c;
+    font-family: 'Boogaloo', cursive;
 }
 
 #btn-space li {
@@ -103,7 +106,11 @@ input {
 }
 #wait {
     font-weight: bold;
-    color: red;
+    color: #fff;
+    text-shadow: 1px 1px #555;
+    display: inline-block;
+    background: red;
+    letter-spacing: 1.5px;
 }
 
 #sdate {
@@ -154,6 +161,95 @@ input {
     100%  {transform: scale(1.1);}
   }
 
+/****stars***/
+
+.stars 
+{
+	cursor: pointer;
+	display: inline-block;
+}
+
+.stars .star
+{
+	pointer-events: none;
+}
+
+.stars:hover .star polygon 
+{
+	fill: #ffd055 !important;
+}
+
+.stars .star polygon 
+{
+	fill: #d8d8d8;
+	pointer-events: none;
+}
+
+.stars[data-stars] .star polygon 
+{
+	fill: #d8d8d8;
+}
+
+/****end stars***/
+
+#hamburger
+{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 51px;
+    height: 55px;
+    line-height: 50px;
+    color: white;
+    font-size: 44px;
+    background-color: rgb(202, 0, 215);
+    padding-left: 6px;
+    margin-top: 4px;
+    margin-right: 4px;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
+    cursor: pointer;
+    border-radius: 2px;
+}
+
+#hamburger-menu
+{
+    font-family: 'boogaloo';
+    position: absolute;
+    top: 64px;
+    right: 0px;
+    width: 161px;
+    height: 100px;
+    color: #93009c;
+    font-size: 16px;
+    line-height: 22px;
+    background-color: white;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
+    cursor: pointer;
+    text-align: center;
+    transform-origin: top right;
+    transform: scale(1,1);
+    animation: fadeInRight 400ms forwards;
+    border-radius: 2px;
+}
+
+@keyframes fadeInRight
+{
+	from { transform: scale(0,0); opacity: 0; }	
+	to { transform: scale(1,1); opacity: 1; }
+}
+
+.ham
+{
+      padding: 14px 16px;
+	display: block;
+	width: 100%;
+	transition: background-color 250ms;
+}
+
+.ham:hover
+{
+	background-color: rgb(214,214,214);
+}
 
     /* -------------------------------ABOUT INDEX------------------------------------- */
 .about-nav{
@@ -198,10 +294,11 @@ input {
 
     .white-text {
         padding: 0 50px 0 50px;
+        font-size: 22px !important;
     }
 
-    .paulo-pic {
-        height: 490px;
+    .bio-pic {
+        height: 390px;
         width: 375x;
         border-radius: 15px;
     }
@@ -210,10 +307,17 @@ input {
         color: white;
     } */
 
-    .img__description:hover a{
+    .img__description:hover {
         /* background: blue; */
-        color: #fff;
+        /* color: #fff !important; */
+        text-shadow: 2px 2px #d1cbcb;
     }
+
+    .img__description a {
+        color: #9c27b0;
+        font-size: 20px;
+    }
+
     /* .img__wrap {
         position: relative;
         height: 490px;

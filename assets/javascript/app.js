@@ -3,7 +3,13 @@ var sidebarListItemCount = 0;
 var sidebarListItems = {};
 var sidebarView;
 var sideBarPoint;
+var sideBarGraphic;
 
+var clientSessionKey = 0;
+var serverSessionKey = 0;
+
+var favoritesArray = [];
+var favoritesArrayIdentifiers = [];
 // ==================================================================================================
 // ============================ Map API =============================================================
 // ==================================================================================================
@@ -11,6 +17,124 @@ var mapOne;
 var mapTwo;
 var mapThree;
 var view;
+
+window.onload = function () { 
+
+	var myOldStorageString = localStorage.getItem("favorites");
+
+	if(myOldStorageString && myOldStorageString.length > 0)
+	{
+		var tempArray = myOldStorageString.split("|");
+		var oldIndex = 0;
+		tempArray.forEach(function(oldFavorite) {
+
+  			favoritesArray[oldIndex] = JSON.parse(oldFavorite);
+			favoritesArrayIdentifiers.push(favoritesArray[oldIndex].link);
+			oldIndex++;
+		});
+	}
+
+	$(".esri-view-surface.esri-view-surface--inset-outline").on("click", function () { 
+
+		setTimeout(function () {
+			if($("#needyStar")[0] !== undefined)
+			{
+				$("#needyStar").css("top", $("#needyStar")[0].parentElement.children[2].offsetTop - 6);
+				if(favoritesArrayIdentifiers.indexOf($(".pop-up-title")[0].href) !== -1)
+				{
+					$($("#needyStar")[0].firstChild.firstChild).css("fill", "#ffd055");
+				}
+				else
+				{
+					$($("#needyStar")[0].firstChild.firstChild).css("fill", "#d8d8d8");
+				}
+			}
+		
+	 	}, 350); 
+	 
+	});
+
+	//check size for menu
+	if(window.innerWidth <= 992)
+	{
+		if(window.innerWidth <= 600)
+		{
+			var styleHeight = 'style=\"height: 47px; line-height: 43px;\"';
+		}
+		else
+		{
+			var styleHeight = "";
+		}
+
+		$("body").append("<div id='hamburger' " + styleHeight + " onClick='menuTime()'>&#9776;</div>");
+	}
+};
+
+var menuOnTheGrill = false;
+
+function menuTime()
+{
+	if(menuOnTheGrill)
+	{
+		$("#hamburger-menu").css("animation", "none");
+		setTimeout(function () { 
+			$("#hamburger-menu").css("animation", "fadeInRight 250ms reverse forwards");
+		}, 30);
+		setTimeout("$('#hamburger-menu').remove(); menuOnTheGrill = false", 280);
+		return;
+	}
+	else
+	{
+		menuOnTheGrill = true;
+		$("body").append("<div id='hamburger-menu'><div class='ham' onClick='$(\"#render-favorites-lanucher\").trigger(\"click\"); menuTime()'>Favorites</div><div class='ham' onClick='window.location=\"about.html\"'>About</div></div>");
+	}
+}
+
+window.onresize = function () { 
+	if(window.innerWidth <= 992)
+	{
+		if(window.innerWidth <= 600)
+		{
+			var styleHeight = 'style=\"height: 47px; line-height: 43px;\"';
+		}
+		else
+		{
+			var styleHeight = "";
+		}
+
+		if($("#hamburger")[0] === undefined)
+		{
+			$("body").append("<div id='hamburger' " + styleHeight + " onClick='menuTime()'>&#9776;</div>");
+		}
+	}
+	else
+	{
+		if($("#hamburger")[0] !== undefined)
+		{
+			$("#hamburger").remove();
+		}
+	}
+};
+
+
+//Keyboard Events
+$( document ).ready(function() {
+	
+	$("#user-search")[0].onkeydown = formKeyCapture;
+	$("#start-date")[0].onkeydown = formKeyCapture;
+	$("#end-date")[0].onkeydown = formKeyCapture;
+
+});
+
+function formKeyCapture(e)
+{
+	if(e.keyCode === 13)
+	{
+		$('.add-user-search').trigger('click');
+	}
+}
+
+
 require([
     "esri/tasks/Locator",
     // loads code specific to creating a map
@@ -72,6 +196,12 @@ require([
             position: "top-right",
             className: "search-box-close"
         });
+
+	  
+		sidebarView = view;
+		sidebarPoint = Point;
+		sidebarGraphic = Graphic;
+
         searchWidget.on("search-complete", function (event) {
             //Center map to closest location
             var lat = event.results[0].results[0].extent.center.latitude; //get lat from 1st address result
@@ -102,7 +232,7 @@ require([
 
             //END OF FIX
 
-            // console.log("Search started.");
+             console.log("Search started.");
             // console.log("results", event)
 
             database.ref("/events").remove();
@@ -141,13 +271,127 @@ require([
 			}
 
 			//create sidebar button
-			$("body").prepend("<a class='btn' style='" + notVisible + "position: absolute; top: 145px; left: 5px; z-index: 50; opacity: 0; transition: opacity 1s; width: 240px; text-align: center;' href='javascript:createSidebarList()' id='event-list-button'>Show Event List</a>");
+			$("body").prepend("<a class='btn' style='" + notVisible + "position: absolute; top: 145px; left: 5px; font-family: \"Boogaloo\"; z-index: 50; opacity: 0; transition: opacity 1s; width: 240px; text-align: center;' href='javascript:createSidebarList()' id='event-list-button'>Show Event List</a>");
 			setTimeout(function () { $("#event-list-button").css({opacity: "1"}); }, 1000);
 		}
         });
 
+	  database.ref("/user-session-unique").on("child_added", function (snap) {
+		console.log("user-session-unique", snap.val());
+		       //Desync from server
+			 serverSessionKey = snap.val();
+
+	  });
+	  
+	$("#render-favorites-lanucher").on("click", function () { 
+
+		sidebarView.popup.close();
+
+		//Logic for creating event list sidebar
+		if(sidebarListCreated)
+		{
+			//set list item count to 0
+			sidebarListItemCount = 0;
+			sidebarListItems = {};
+
+			//delete Sidebar
+			hideSidebarList();
+		}
+		else
+		{
+			sidebarListCreated = true;
+			
+			if(window.innerWidth <= 500)
+			{
+				var notVisible = "display: none;";
+			}
+			else
+			{
+				var notVisible = "";
+			}
+
+			//create sidebar button
+			$("body").prepend("<a class='btn' style='" + notVisible + "position: absolute; top: 145px; left: 5px; font-family: \"Boogaloo\"; z-index: 50; opacity: 0; transition: opacity 1s; width: 240px; text-align: center;' href='javascript:createSidebarList()' id='event-list-button'>Show Event List</a>");
+			setTimeout(function () { $("#event-list-button").css({opacity: "1"}); }, 1000);
+		}
+
+		view.graphics.removeAll();
+
+		for(var favoriteEvent = 0; favoriteEvent < favoritesArray.length; favoriteEvent++)
+		{ 
+			var rsvpTag = favoritesArray[favoriteEvent].rsvp;
+
+		      var point = {
+		          type: "point", // autocasts as new Point()
+		          className: "btn waves-effect waves-light light-blue accent-3 animated infinite rubberBand",
+		          longitude: favoritesArray[favoriteEvent].lon,
+		          latitude: favoritesArray[favoriteEvent].lat
+		      };
+
+		      // Create a symbol for drawing the point
+		      var markerSymbol = {
+		          type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+		          color: [107, 0, 120],
+		          outline: { // autocasts as new SimpleLineSymbol()
+		              color: [176, 0, 178],
+		              width: 1
+		          }
+		      };
+		      // markerSymbol.addClass('test');
+
+			//it's a favorite.
+			var goldStar = "fill: #ffd055";
+
+		      // Create a graphic and add the geometry and symbol to it
+		      var pointGraphic = new Graphic({
+		          geometry: point,
+		          symbol: markerSymbol,
+		          popupTemplate: { // autocasts as new PopupTemplate()
+
+		              title: "<a class='pop-up-title' target='_blank' href='" + favoritesArray[favoriteEvent].link + "'>" + favoritesArray[favoriteEvent].name + "</a>",
+		              content: "<p>Group: " + favoritesArray[favoriteEvent].group + "</p><p> Date: " + favoritesArray[favoriteEvent].date + " / Time: " + favoritesArray[favoriteEvent].time + "</p>"
+		                  + rsvpTag + '<div class="stars" data-stars="1" style="position: absolute; top: 126px; right: 8px; z-index: 50;" id="needyStar" onClick="addListItemToFavoritesPopUp(this)">' +
+								'<svg height="25" width="23" class="star rating" data-rating="1">' +
+    									'<polygon points="9.9, 1.1, 3.3, 21.78, 19.8, 8.58, 0, 8.58, 16.5, 21.78" style="fill-rule:nonzero; ' + goldStar + '"/>' +
+ 								'</svg>' +
+							'</div>'
+		          }
+		      });
+
+		      // pointGraphic.className('hello');
+		      view.graphics.add(pointGraphic);
+
+			//Logic for creating event object and adding data per each item
+			sidebarListItems[sidebarListItemCount] = {};
+			sidebarListItems[sidebarListItemCount].lon = favoritesArray[favoriteEvent].lon;
+			sidebarListItems[sidebarListItemCount].lat = favoritesArray[favoriteEvent].lat;
+			sidebarListItems[sidebarListItemCount].link = favoritesArray[favoriteEvent].link;
+			sidebarListItems[sidebarListItemCount].name = favoritesArray[favoriteEvent].name;
+			sidebarListItems[sidebarListItemCount].group = favoritesArray[favoriteEvent].group;
+			sidebarListItems[sidebarListItemCount].date = favoritesArray[favoriteEvent].date;
+			sidebarListItems[sidebarListItemCount].time = favoritesArray[favoriteEvent].time;
+			sidebarListItems[sidebarListItemCount].rsvp = rsvpTag;
+
+			//Logic for creating event list sidebar button
+			sidebarListItemCount++;
+			$("#event-list-button").text("Show Event List (" + sidebarListItemCount + ")");
+		}
+	  });
+
         //WHEN SEARCH IS DONE IT WILL TAKE INFO FROM DATABASE AND ADD POINTS WHERE THE EVENTS ARE
         database.ref("/events").on("child_added", function (snap) {
+
+		if(serverSessionKey != clientSessionKey)
+		{
+			//console.log(false, serverSessionKey, clientSessionKey);
+			return;
+		}
+		else
+		{	
+			//console.log(true, serverSessionKey, clientSessionKey);
+		}
+
+
             view.popup.visible = true;
             var rsvpTag;
             if ((snap.val().eventWaitlist) >= 1) {
@@ -157,7 +401,6 @@ require([
             else {
                 rsvpTag = ("<p id='rsvp'> RSVP Count: " + snap.val().eventRsvpCount + "</p>");
             }
-
             console.log(snap.val());
             var point = {
                 type: "point", // autocasts as new Point()
@@ -176,6 +419,15 @@ require([
                 }
             };
             // markerSymbol.addClass('test');
+		//Check if it's a favorite
+		if(favoritesArrayIdentifiers.indexOf(snap.val().eventLink) !== -1)
+		{
+			var goldStar = "fill: #ffd055";
+		}
+		else
+		{
+			var goldStar = "";
+		}
 
             // Create a graphic and add the geometry and symbol to it
             var pointGraphic = new Graphic({
@@ -185,7 +437,11 @@ require([
 
                     title: "<a class='pop-up-title' target='_blank' href='" + snap.val().eventLink + "'>" + snap.val().eventName + "</a>",
                     content: "<p>Group: " + snap.val().eventGroupName + "</p><p> Date: " + snap.val().eventDate + " / Time: " + snap.val().eventTime + "</p>"
-                        + rsvpTag
+                        + rsvpTag + '<div class="stars" data-stars="1" style="position: absolute; top: 126px; right: 8px; z-index: 50;" id="needyStar" onClick="addListItemToFavoritesPopUp(this)">' +
+								'<svg height="25" width="23" class="star rating" data-rating="1">' +
+    									'<polygon points="9.9, 1.1, 3.3, 21.78, 19.8, 8.58, 0, 8.58, 16.5, 21.78" style="fill-rule:nonzero; ' + goldStar + '" onLoad="javascript:console.log(\"check me\")"/>' +
+ 								'</svg>' +
+							'</div>'
                 }
             });
 
@@ -205,14 +461,12 @@ require([
 
 		//Logic for creating event list sidebar button
 		sidebarListItemCount++;
-		sidebarView = view;
-		sidebarPoint = Point;
 		$("#event-list-button").text("Show Event List (" + sidebarListItemCount + ")");
 		
         })
         //END OF ADDING POINTS
         database.ref("usersearch").on("value", function () {
-            view.graphics.removeAll();
+
         })
     }
 
@@ -254,12 +508,25 @@ function createSidebarList()
 	}
 
 	//create sidebar div
-	$("body").append("<div id='sidebar-list-div' style='" + notVisible + "position: absolute; top: 200px; left: 15px; z-index: 50; border: 1px solid gray; background-color: rgba(128, 0, 128, 0.5); width: 240px; height: 0vh; transition: height 500ms; overflow-y: scroll;'></div>");
-	setTimeout(function () { $("#sidebar-list-div").css({height: "70vh"}); }, 10);
+	$("body").append("<div id='sidebar-list-div' style='" + notVisible + "position: absolute; top: 255px; left: 15px; z-index: 50; border: 1px solid gray; background-color: rgba(128, 0, 128, 0.5); width: 240px; height: 0vh; transition: height 500ms; overflow-y: scroll;'></div>");
+	setTimeout(function () { $("#sidebar-list-div").css({height: "65vh"}); }, 10);
+
+	$("body").prepend("<a class='btn' style='" + notVisible + "position: absolute; top: 195px; left: 5px; font-family: \"Boogaloo\"; z-index: 50; opacity: 0; transition: opacity 1s, width 250ms, color 250ms; width: 240px; text-align: center;' href='javascript:showSortOptions()' id='sort-list-button'>Sort List</a>");
+	setTimeout(function () { $("#sort-list-button").css({opacity: "1"}); }, 10);
 
 	//inject content
 	for(var sidebarEvent in sidebarListItems)
 	{
+		//check if it's a favorite
+		if(favoritesArrayIdentifiers.indexOf(sidebarListItems[sidebarEvent].link) !== -1)
+		{
+			var goldStar = "fill: #ffd055";
+		}
+		else
+		{
+			var goldStar = "";
+		}
+
 		$("#sidebar-list-div").append("<div class='esri-widget' style='position: relative; background-color: #ca00d7; padding: 5px; line-height: 1.3em; color: white; border: 4px solid rgb(128, 0, 128); margin-bottom: 10px; font-weight: bold; font-size: 20px; padding-bottom: 0px;'>" +
 							"<a target='_blank' href='" + sidebarListItems[sidebarEvent].link + "' style='color: white; padding-right: 25px; display: block;'>" + sidebarListItems[sidebarEvent].name + "</a>" +
 							"<p style='font-size: 12px; font-weight: normal; margin-top: 4px; padding-right: 25px;'>Group: " + 
@@ -272,28 +539,263 @@ function createSidebarList()
 							"</p>" + 
 							"<p id='" + $(sidebarListItems[sidebarEvent].rsvp).attr('id') + "' style='font-size: 12px; margin-top: -8px;'>" + 
 							$(sidebarListItems[sidebarEvent].rsvp).text() + 
-							"</p><div style='position: absolute; top: 0px; right: 0px; width: 25px; height: 100%; line-height: 100%; background-color: rgb(128, 0, 128); display: flex; align-items: center; justify-content: center; cursor: pointer;' id='arrow-" + sidebarEvent + "' onClick='centerOnEvent(this.id)'><span style='display: inline-block; font-weight: normal; font-size: 10px;'>&gt;</span></div></div>");
+							" &nbsp; " +
+							'<div class="stars" data-stars="1" style="position: absolute; bottom: 7px; right: 30px;">' +
+								'<svg height="25" width="23" class="star rating" data-rating="1">' +
+    									'<polygon points="9.9, 1.1, 3.3, 21.78, 19.8, 8.58, 0, 8.58, 16.5, 21.78" style="fill-rule:nonzero;' + goldStar + '"/>' +
+ 								'</svg>' +
+							'</div>' +
+							"<div style='position: absolute; top: 0px; right: 0px; width: 25px; height: 100%; line-height: 100%; background-color: rgb(128, 0, 128); display: flex; align-items: center; justify-content: center; cursor: pointer;' id='arrow-" + sidebarEvent + "' onClick='centerOnEvent(this.id)'><span style='display: inline-block; font-weight: normal; font-size: 10px;'>&gt;</span></div></div>");
 	}
+
+	//add stars event
+	$(".stars").on("click", addListItemToFavorites);
+}
+
+function addListItemToFavorites(e)
+{
+	var identifier = e.target.parentElement.firstChild.href;
+
+	var indexOfIdentifier = favoritesArrayIdentifiers.indexOf(identifier);
+	if(indexOfIdentifier !== -1)
+	{
+		//console.log("Already a favorite");
+		$(e.target.firstChild.firstChild).css("fill", "#d8d8d8");
+
+		//remove it from favorites
+		favoritesArray.splice(indexOfIdentifier, 1);
+		favoritesArrayIdentifiers.splice(indexOfIdentifier, 1);
+
+		//update local storage
+		storeFavorites();
+		
+		return;
+	}
+	
+	favoritesArrayIdentifiers.push(identifier);
+
+	$(e.target.firstChild.firstChild).css("fill", "#ffd055");
+
+	var quickLinkArray = [];
+	for(var props in sidebarListItems)
+	{
+		quickLinkArray.push(sidebarListItems[props].link);
+	}
+
+	var whichIndex = quickLinkArray.indexOf(identifier);
+
+	favoritesArray.push(sidebarListItems[whichIndex]);
+
+	storeFavorites();
+}
+
+function addListItemToFavoritesPopUp(e)
+{
+	var identifier = $(".pop-up-title")[0].href;
+	
+	var indexOfIdentifier = favoritesArrayIdentifiers.indexOf(identifier);
+	if(indexOfIdentifier !== -1)
+	{
+		console.log("Already a favorite");
+		$(e.firstChild.firstChild).css("fill", "#d8d8d8");
+
+		//remove it from favorites
+		favoritesArray.splice(indexOfIdentifier, 1);
+		favoritesArrayIdentifiers.splice(indexOfIdentifier, 1);
+
+		//update local storage
+		storeFavorites();
+		
+		return;
+	}
+	
+	favoritesArrayIdentifiers.push(identifier);
+
+	$(e.firstChild.firstChild).css("fill", "#ffd055");
+
+	var quickLinkArray = [];
+	for(var props in sidebarListItems)
+	{
+		quickLinkArray.push(sidebarListItems[props].link);
+	}
+
+	var whichIndex = quickLinkArray.indexOf(identifier);
+	favoritesArray.push(sidebarListItems[whichIndex]);
+
+	storeFavorites();
+}
+
+function storeFavorites()
+{
+	var myStorageString = "";
+
+	for(var mss = 0; mss < favoritesArray.length; mss++) 
+	{
+		myStorageString += "|" + JSON.stringify(favoritesArray[mss]) ;
+	}
+
+	myStorageString = myStorageString.substr(1);
+
+	localStorage.setItem("favorites", myStorageString);
 }
 
 function hideSidebarList()
 {
+	sortState = 0;
+	sortOrder = [];
+
 	$("#event-list-button").text("Show Event List (" + sidebarListItemCount + ")");
 	$("#event-list-button").attr("href", "#");
 
 	//remove sidebar div
 	$("#sidebar-list-div").css({height: "0vh"});
-	setTimeout(function () { $("#sidebar-list-div").remove(); 
-					 $("#event-list-button").attr("href", "javascript:createSidebarList()");
+	setTimeout(function () { $("#sidebar-list-div").remove();
+					 $("#sort-list-button").css({opacity: "0"});
 	}, 500);
+
+	setTimeout(function () { $("#sort-list-button").remove();
+					 $("#event-list-button").attr("href", "javascript:createSidebarList()");
+	}, 1000);
+}
+
+var sortState = 0;
+var sortColors = ["","white","white","white","white"];
+function showSortOptions()
+{
+	$("#sort-list-button").attr("href", "#");
+	$("#sort-list-button").css({width: "440px", color: "#ca00d7"});
+
+	sortColors = ["","white","white","white","white"];
+	sortColors[sortState] = "rgb(36, 230, 212)";
+
+	setTimeout(function () { $("#sort-list-button").html("<a href='javascript:sortSidebarList(\"name1\")' style='color: " + sortColors[1] + ";'>Name (A-Z)</a>&nbsp; &nbsp;" + 
+					    "<a href='javascript:sortSidebarList(\"name2\")' style='color: " + sortColors[2] + ";'>Name (Z-A)</a>&nbsp; &nbsp;" + 
+					    "<a href='javascript:sortSidebarList(\"date1\")' style='color: " + sortColors[3] + ";'>Date (^)</a>&nbsp; &nbsp;" + 
+					    "<a href='javascript:sortSidebarList(\"date2\")' style='color: " + sortColors[4] + ";'>Date (<span style='display: inline-block; transform: rotate(180deg)'>^</span>)</a>");
+	}, 250);
+}
+
+var sortOrder = [];
+function sortSidebarList(category)
+{
+	sortOrder = [];
+
+	var myArray = [];
+	var mySortedArray;
+
+	if(category === "name1" || category === "name2")
+	{
+		sortState = 1;
+		for(var props in sidebarListItems)
+		{
+			myArray.push(sidebarListItems[props].name);
+		}
+	}
+	else if(category === "date1" || category === "date2")
+	{	
+		sortState = 3;
+		for(var props in sidebarListItems)
+		{
+			var dateString = sidebarListItems[props].date;
+
+			var dayMask = /([^\s]+)/;
+			var dayNumber = dayMask.exec(dateString);
+
+			var monthNameMask = /[a-z]{3}/i;
+			var monthName = monthNameMask.exec(dateString);
+			var monthNumber = new Date(Date.parse(monthName[0] +" 1, 2012")).getMonth() + 1;
+
+			var yearMask = /[0-9]{4}/;
+			var yearNumber = yearMask.exec(dateString);
+
+			var dateUTC = Date.UTC(yearNumber[0], monthNumber, dayNumber[0]);
+
+			myArray.push(dateUTC);
+		}
+	}
+
+	mySortedArray = myArray.slice(0).sort();
+
+	if(category === "name2" || category === "date2")
+	{
+		sortState++;
+		mySortedArray.reverse();	
+	}
+
+	for(var i = 0; i < mySortedArray.length; i++) 
+	{
+	    sortOrder.push(myArray.indexOf(mySortedArray[i]));
+	}
+
+	//restore button attrs
+	$("#sort-list-button").html("Sort List");
+	$("#sort-list-button").css({width: "240px", color: "white"});
+
+	setTimeout(function () { $("#sort-list-button").attr("href", "javascript:showSortOptions()");
+	}, 250);
+
+	applyNewSortOrder();
+}
+
+function applyNewSortOrder()
+{
+	lastHighlight = "7";
+	$("#sidebar-list-div").empty();
+
+	//inject sorted content
+	for(var sidebarEvent in sidebarListItems)
+	{
+		var originalEvent = sidebarEvent;
+		sidebarEvent = sortOrder[sidebarEvent];
+
+		//check if it's a favorite
+		if(favoritesArrayIdentifiers.indexOf(sidebarListItems[sidebarEvent].link) !== -1)
+		{
+			var goldStar = "fill: #ffd055";
+		}
+		else
+		{
+			var goldStar = "";
+		}
+
+		$("#sidebar-list-div").append("<div class='esri-widget' style='position: relative; background-color: #ca00d7; padding: 5px; line-height: 1.3em; color: white; border: 4px solid rgb(128, 0, 128); margin-bottom: 10px; font-weight: bold; font-size: 20px; padding-bottom: 0px;'>" +
+							"<a target='_blank' href='" + sidebarListItems[sidebarEvent].link + "' style='color: white; padding-right: 25px; display: block;'>" + sidebarListItems[sidebarEvent].name + "</a>" +
+							"<p style='font-size: 12px; font-weight: normal; margin-top: 4px; padding-right: 25px;'>Group: " + 
+							sidebarListItems[sidebarEvent].group + 
+							"</p>" + 
+							"<p style='font-size: 12px; font-weight: normal; margin-top: -8px; padding-right: 25px;'>Date: " + 
+							sidebarListItems[sidebarEvent].date + 
+							" / Time: " + 
+							sidebarListItems[sidebarEvent].time + 
+							"</p>" + 
+							"<p id='" + $(sidebarListItems[sidebarEvent].rsvp).attr('id') + "' style='font-size: 12px; margin-top: -8px;'>" + 
+							$(sidebarListItems[sidebarEvent].rsvp).text() + 
+							" &nbsp; " +
+							'<div class="stars" data-stars="1" style="position: absolute; bottom: 7px; right: 30px;">' +
+								'<svg height="25" width="23" class="star rating" data-rating="1">' +
+    									'<polygon points="9.9, 1.1, 3.3, 21.78, 19.8, 8.58, 0, 8.58, 16.5, 21.78" style="fill-rule:nonzero; ' + goldStar + '"/>' +
+ 								'</svg>' +
+							'</div>' +
+							"<div style='position: absolute; top: 0px; right: 0px; width: 25px; height: 100%; line-height: 100%; background-color: rgb(128, 0, 128); display: flex; align-items: center; justify-content: center; cursor: pointer;' id='arrow-" + originalEvent + "' onClick='centerOnEvent(this.id)'><span style='display: inline-block; font-weight: normal; font-size: 10px;'>&gt;</span></div></div>");
+	}
+
+	$("#sidebar-list-div")[0].scrollTo(0, 0);
+
+	//add stars event
+	$(".stars").on("click", addListItemToFavorites);
 }
 
 var addEventOnce = false;
 
 function centerOnEvent(eventItemNumber)
 {
+	var originalEvent = eventItemNumber;
+	if(!(sortOrder.length < 1))
+	{ 
+		eventItemNumber = "arrow-" + sortOrder[eventItemNumber.replace("arrow-", "")];
+	}
 	$("#circle-marker").remove();
-	highlightEvent(eventItemNumber);
+	highlightEvent(originalEvent);
 	var lat = sidebarListItems[eventItemNumber.replace("arrow-", "")].lat;
 	var lon = sidebarListItems[eventItemNumber.replace("arrow-", "")].lon;
 
@@ -327,7 +829,7 @@ function centerOnEvent(eventItemNumber)
 																    $(lastHighlight).css("border-color", "rgb(128,0,128)"); 
 
 																    setTimeout(function () { if($(".esri-popup--shadow")[0] !== undefined) { hideSidebarList(); } }, 500);
-																    checkSidebarGone();
+																    sidebarView.popup.close();
 						}); 
 																	
 					 }
@@ -344,7 +846,7 @@ function highlightEvent(eventItemNumber)
 	}
 	
 	lastHighlight = $("#" + eventItemNumber)[0].parentElement;
-	$(lastHighlight).css("border-color", "#009688");
+	$(lastHighlight).css("border-color", "rgb(36, 230, 212)");
 }
 
 //ZOOMS IN AND CENTERS MAP ON SEARCH
@@ -430,20 +932,17 @@ console.log('before click ' + userMeetupDateStart)
 console.log('before click ' + userMeetupDateEnd)
 
 $('.add-user-search').on('click', function (view, Point) {
+
     $('.second-drop').dropdown({
         closeOnClick: false,
         outDuration: 500,
     });
-    database.ref("/events").remove();
-    database.ref().update({
-        usersearch: $("#user-search").val()
-    });
-    database.ref().update({
-        usersearch: ""
-    });
+    //database.ref("/events").remove();
+    sidebarView.graphics.removeAll();
+    
     userMeetupText = $('#user-search').val();
     console.log('search term: ' + userMeetupText)
-    meetupAPI();
+    //meetupAPI();
     if (($('#start-date').val() == '') && ($('#end-date').val() == '')) {
         console.log('start date is blank');
         database.ref("/events").remove();
@@ -480,6 +979,44 @@ $('.add-user-search').on('click', function (view, Point) {
         console.log('start date: ' + userMeetupDateStart);
         console.log('end date: ' + userMeetupDateEnd);
     }
+
+	/*database.ref().update({
+        usersearch: $("#user-search").val()
+    });
+    database.ref().update({
+        usersearch: ""
+    });*/
+
+    //Logic for creating event list sidebar
+	sidebarView.popup.close();
+      setTimeout(function () { sidebarView.popup.close(); }, 1300);
+
+	if(sidebarListCreated)
+	{
+		//set list item count to 0
+		sidebarListItemCount = 0;
+		sidebarListItems = {};
+		console.log("hi");
+		//delete Sidebar
+		hideSidebarList();
+	}
+	else
+	{
+		sidebarListCreated = true;
+		
+		if(window.innerWidth <= 500)
+		{
+			var notVisible = "display: none;";
+		}
+		else
+		{
+			var notVisible = "";
+		}
+
+		//create sidebar button
+		$("body").prepend("<a class='btn' style='" + notVisible + "position: absolute; top: 145px; left: 5px; font-family: \"Boogaloo\"; z-index: 50; opacity: 0; transition: opacity 1s; width: 240px; text-align: center;' href='javascript:createSidebarList()' id='event-list-button'>Show Event List</a>");
+		setTimeout(function () { $("#event-list-button").css({opacity: "1"}); }, 1000);
+	}
 })
 var meetupAPI = function () {
     database.ref().once("value").then(function (snap) {
@@ -493,6 +1030,26 @@ var meetupAPI = function () {
             url: url,
             success: function (result) {
                 console.log(result);
+
+		   //allow simultaneous users
+
+		   //remove existing key
+		   database.ref("/user-session-unique").remove();
+
+		   //create new unique user key based on time and a random number
+		   var d = new Date().getTime();
+    	         var myRand = d.toString() + (Math.floor(Math.random() * 10000)); 
+
+		   //validate client
+		   clientSessionKey = myRand;
+		   console.log("myRand", clientSessionKey);
+		   //sync to server
+		   serverSessionKey = myRand;
+
+		   //store newly generated key
+		   database.ref("/user-session-unique").push(myRand);
+
+
                 var eventLat;
                 var eventLon;
                 for (i = 0; i < result.data.events.length; i++) {
@@ -520,9 +1077,7 @@ var meetupAPI = function () {
 
 
                     });
-
-                }
-
+               }
             }
         });
     });
