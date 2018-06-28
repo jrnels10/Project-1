@@ -988,6 +988,9 @@ var meetupAPI = function () {
                 //store newly generated key
                 database.ref("/user-session-unique").push(myRand);
 
+                if (result.data.events === undefined || result.data.events.length === 0) {
+                    M.toast({html: 'No results, Try a different location or filter parameters.'})
+                }
 
                 var eventLat;
                 var eventLon;
@@ -1017,7 +1020,10 @@ var meetupAPI = function () {
 
                     });
                 }
-            }
+            },
+            fail: function() {
+                M.toast({html: 'No results, Try a different location or filter parameters.'})
+            } 
         });
     });
 }
