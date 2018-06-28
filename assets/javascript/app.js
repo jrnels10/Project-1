@@ -80,24 +80,33 @@ function menuTime() {
     }
 }
 
-window.onresize = function () {
-    if (window.innerWidth <= 992) {
-        if (window.innerWidth <= 600) {
-            var styleHeight = 'style=\"height: 47px; line-height: 43px;\"';
+window.onresize = function () { 
+	if(window.innerWidth <= 992)
+	{
+		if(window.innerWidth <= 600)
+		{
+			var styleHeight = 'style=\"height: 47px; line-height: 43px;\"';
+		}
+		else
+		{
+			var styleHeight = "";
+		}
+
+		if($("#hamburger")[0] === undefined)
+		{
+			$("body").append("<div id='hamburger' " + styleHeight + " onClick='menuTime()'>&#9776;</div>");
         }
         else {
-            var styleHeight = "";
-        }
-
-        if ($("#hamburger")[0] === undefined) {
-            $("body").append("<div id='hamburger' " + styleHeight + " onClick='menuTime()'>&#9776;</div>");
-        }
-    }
-    else {
-        if ($("#hamburger")[0] !== undefined) {
-            $("#hamburger").remove();
-        }
-    }
+            $('#hamburger').attr("style", styleHeight.substr(7, styleHeight.length -9))
+          }
+	}
+	else
+	{
+		if($("#hamburger")[0] !== undefined)
+		{
+			$("#hamburger").remove();
+		}
+	}
 };
 
 
