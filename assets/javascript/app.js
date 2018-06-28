@@ -105,7 +105,10 @@ window.onresize = function () {
 		if($("#hamburger")[0] === undefined)
 		{
 			$("body").append("<div id='hamburger' " + styleHeight + " onClick='menuTime()'>&#9776;</div>");
-		}
+        }
+        else {
+            $('#hamburger').attr("style", styleHeight.substr(7, styleHeight.length -9))
+          }
 	}
 	else
 	{

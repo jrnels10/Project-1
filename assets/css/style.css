@@ -273,24 +273,39 @@ input {
     background-image: url("");
 } */
 
-    .carousel.carousel-slider { 
-     height: 93vh;
+    .carousel { 
+     height: 93vh !important;
     }
 
     .carousel-item  {
         text-align: center;
         padding: 0px;
         letter-spacing: 1px;
+         /* height: 93vh; */
     }
 
     .white-text {
         padding: 0 50px 0 50px;
         font-size: 22px !important;
+
     }
 
+    @media screen and (max-width: 600px){
+        .white-text {
+            padding: 0 50px 0 50px;
+            font-size: 16px !important;
+        }
+        /* .bio-pic {
+            height: 375px;
+            width: 200px;
+            border-radius: 15px;
+        } */
+    }
+
+
     .bio-pic {
-        height: 390px;
-        width: 375x;
+        /* height: 375px; */
+        width: 260px;
         border-radius: 15px;
     }
 
