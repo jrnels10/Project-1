@@ -687,12 +687,12 @@ function sortSidebarList(category) {
 	for(var i = 0; i < myArray.length; i++) 
 	{
 		var duplicateIndex = 0;
-		for(var q = i; q < myArray.length - i; q++)
+		for(var q = 0; q < myArray.length; q++)
 		{
-			if(myArray[i] === myArray[q])
-			{
+			if((myArray[i] === myArray[q]) && (i !== q))
+			{ 
 				if(myDuplicateArray.indexOf(myArray[i]) === -1)
-				{
+				{ 
 					myDuplicateArray.push(myArray[i]);
 				}
 			}
